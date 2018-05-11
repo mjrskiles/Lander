@@ -15,7 +15,8 @@ class GameScene: SKScene {
     var graphs = [String : GKGraph]()
     
     private var lastUpdateTime : TimeInterval = 0
-    private var craft: SKSpriteNode?
+    private var craft: SKNode?
+    private var nozzleFlame: SKEmitterNode?
     
     // Touch related
     private var lastTouch: CGPoint?
@@ -26,17 +27,30 @@ class GameScene: SKScene {
         self.lastUpdateTime = 0
         
         // Get label node from scene and store it for use later
-        self.craft = self.childNode(withName: "//lander") as? SKSpriteNode
+        self.craft = self.childNode(withName: "//lander")
         if let craft = self.craft {
             print("Fetched craft")
-            craft.alpha = 0.0
-            craft.run(SKAction.fadeIn(withDuration: 2.0))
         }
+    }
+    
+    func newFlameEmitter() -> SKEmitterNode? {
+        return SKEmitterNode(fileNamed: "RocketFlame.sks")
     }
     
     
     func touchDown(atPoint pos : CGPoint) {
         lastTouch = pos
+        if let nozzle = self.childNode(withName: "//nozzle") as? SKSpriteNode {
+            if nozzleFlame == nil {
+                if let nozzleFlame = newFlameEmitter() {
+                    print("Created flame emitter.")
+                    nozzle.addChild(nozzleFlame)
+                    nozzleFlame.zPosition = -1
+                    nozzleFlame.position.y = -40.0
+                    
+                }
+            }
+        }
     }
     
     func touchMoved(toPoint pos : CGPoint) {
@@ -49,6 +63,9 @@ class GameScene: SKScene {
     
     func touchUp(atPoint pos : CGPoint) {
         lastTouch = nil
+        if let nozzle = self.childNode(withName: "//nozzle") as? SKSpriteNode {
+            nozzle.removeAllChildren()
+        }
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

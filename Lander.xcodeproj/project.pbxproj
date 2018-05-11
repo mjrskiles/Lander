@@ -18,6 +18,8 @@
 		4C0AA7D12092EB2C000EEEB9 /* LanderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C0AA7D02092EB2C000EEEB9 /* LanderTests.swift */; };
 		4C0AA7DC2092EB2C000EEEB9 /* LanderUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C0AA7DB2092EB2C000EEEB9 /* LanderUITests.swift */; };
 		4C98A2BA20A4CC6F00CBB428 /* SpaceShip.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4C98A2B920A4CC6F00CBB428 /* SpaceShip.xcassets */; };
+		4C98A2BD20A4FBA300CBB428 /* RocketFlame.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4C98A2BB20A4FBA300CBB428 /* RocketFlame.sks */; };
+		4C98A2BE20A4FBA300CBB428 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4C98A2BC20A4FBA300CBB428 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +57,8 @@
 		4C0AA7DB2092EB2C000EEEB9 /* LanderUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanderUITests.swift; sourceTree = "<group>"; };
 		4C0AA7DD2092EB2C000EEEB9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4C98A2B920A4CC6F00CBB428 /* SpaceShip.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = SpaceShip.xcassets; sourceTree = "<group>"; };
+		4C98A2BB20A4FBA300CBB428 /* RocketFlame.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = RocketFlame.sks; sourceTree = "<group>"; };
+		4C98A2BC20A4FBA300CBB428 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,8 +111,8 @@
 			children = (
 				4C98A2B820A4CC2300CBB428 /* Assets */,
 				4C0AA7B52092EB2A000EEEB9 /* AppDelegate.swift */,
-				4C0AA7B72092EB2A000EEEB9 /* GameScene.sks */,
-				4C0AA7B92092EB2A000EEEB9 /* Actions.sks */,
+				4C98A2BF20A51E3300CBB428 /* Scenes */,
+				4C98A2C020A51E3E00CBB428 /* Actions */,
 				4C0AA7BB2092EB2A000EEEB9 /* GameScene.swift */,
 				4C0AA7BD2092EB2A000EEEB9 /* GameViewController.swift */,
 				4C0AA7BF2092EB2A000EEEB9 /* Main.storyboard */,
@@ -141,8 +145,26 @@
 			isa = PBXGroup;
 			children = (
 				4C98A2B920A4CC6F00CBB428 /* SpaceShip.xcassets */,
+				4C98A2BB20A4FBA300CBB428 /* RocketFlame.sks */,
+				4C98A2BC20A4FBA300CBB428 /* Assets.xcassets */,
 			);
 			path = Assets;
+			sourceTree = "<group>";
+		};
+		4C98A2BF20A51E3300CBB428 /* Scenes */ = {
+			isa = PBXGroup;
+			children = (
+				4C0AA7B72092EB2A000EEEB9 /* GameScene.sks */,
+			);
+			path = Scenes;
+			sourceTree = "<group>";
+		};
+		4C98A2C020A51E3E00CBB428 /* Actions */ = {
+			isa = PBXGroup;
+			children = (
+				4C0AA7B92092EB2A000EEEB9 /* Actions.sks */,
+			);
+			path = Actions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -250,10 +272,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				4C98A2BA20A4CC6F00CBB428 /* SpaceShip.xcassets in Resources */,
+				4C98A2BD20A4FBA300CBB428 /* RocketFlame.sks in Resources */,
 				4C0AA7C12092EB2A000EEEB9 /* Main.storyboard in Resources */,
 				4C0AA7B82092EB2A000EEEB9 /* GameScene.sks in Resources */,
 				4C0AA7C32092EB2C000EEEB9 /* Assets.xcassets in Resources */,
 				4C0AA7C62092EB2C000EEEB9 /* LaunchScreen.storyboard in Resources */,
+				4C98A2BE20A4FBA300CBB428 /* Assets.xcassets in Resources */,
 				4C0AA7BA2092EB2A000EEEB9 /* Actions.sks in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

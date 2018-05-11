@@ -58,4 +58,8 @@ class GameViewController: UIViewController {
     override var prefersStatusBarHidden: Bool {
         return true
     }
+    
+    @IBAction func returnToHomeScreen(_ sender: UIButton) {
+        dismiss(animated: true, completion: nil)
+    }
 }

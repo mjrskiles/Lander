@@ -16,6 +16,7 @@ class GameScene: SKScene {
     
     private var lastUpdateTime : TimeInterval = 0
     private var craft: SKNode?
+    private var nozzle: SKSpriteNode?
     private var nozzleFlame: SKEmitterNode?
     
     // Physics related
@@ -43,6 +44,11 @@ class GameScene: SKScene {
         guard let body = craft.childNode(withName: "//body") as? SKSpriteNode else {
             return
         }
+        
+        self.nozzle = self.childNode(withName: "//nozzle") as? SKSpriteNode
+        guard let nozzle = self.nozzle else {
+            return
+        }
         guard let leftLeg = craft.childNode(withName: "//leg_left") as? SKSpriteNode else {
             return
         }
@@ -50,10 +56,22 @@ class GameScene: SKScene {
             return
         }
         
-        setRectangularPhysicsBody(on: body, mass: 15_200.0, collisionMask: shipCollidableMask)
+        craft.physicsBody = SKPhysicsBody(circleOfRadius: 1.0)
+        
+//        setRectangularPhysicsBody(on: body, mass: 15_200.0, collisionMask: shipCollidableMask)
+        setRectangularPhysicsBody(on: body, mass: 100.0, collisionMask: shipCollidableMask)
+        setRectangularPhysicsBody(on: nozzle, mass: 100.0, collisionMask: shipCollidableMask)
         setRectangularPhysicsBody(on: leftLeg, mass: 100.0, collisionMask: shipCollidableMask)
         setRectangularPhysicsBody(on: rightLeg, mass: 100.0, collisionMask: shipCollidableMask)
         
+        // Fixes the container node to the actual spacecraft sprites
+        let mainAnchor = body.convert(CGPoint(x: 0.5, y: 0.5), to: scene!)
+        let mainJoint = SKPhysicsJointFixed.joint(withBodyA: craft.physicsBody!, bodyB: body.physicsBody!, anchor: mainAnchor)
+        scene?.physicsWorld.add(mainJoint)
+        
+        let nozzleAnchor = nozzle.convert(nozzle.anchorPoint, to: scene!)
+        let nozzleJoint = SKPhysicsJointFixed.joint(withBodyA: body.physicsBody!, bodyB: nozzle.physicsBody!, anchor: nozzleAnchor)
+        scene?.physicsWorld.add(nozzleJoint)
         
         let leftAnchor = leftLeg.convert(CGPoint(x: 1, y: 1), to: scene!)
         let leftJoint = SKPhysicsJointFixed.joint(withBodyA: body.physicsBody!, bodyB: leftLeg.physicsBody!, anchor: leftAnchor)
@@ -90,7 +108,7 @@ class GameScene: SKScene {
     
     func touchDown(atPoint pos : CGPoint) {
         lastTouch = pos
-        if let nozzle = self.childNode(withName: "//nozzle") as? SKSpriteNode {
+        if let nozzle = self.nozzle {
             if nozzleFlame == nil {
                 if let nozzleFlame = newFlameEmitter() {
                     print("Created flame emitter.")
@@ -100,6 +118,8 @@ class GameScene: SKScene {
                     
                 }
             }
+            
+            
         }
     }
     
@@ -107,6 +127,7 @@ class GameScene: SKScene {
         if let last = lastTouch, let craft = self.craft {
             let dy = pos.y - last.y
             craft.zRotation -= (dy / rotationScalar)
+            
         }
         lastTouch = pos
     }
@@ -150,6 +171,15 @@ class GameScene: SKScene {
         for entity in self.entities {
             entity.update(deltaTime: dt)
         }
+        if lastTouch != nil {
+            let impulse: CGFloat = 100_000
+            let angle = craft!.zRotation + (CGFloat.pi / 2)
+            let dx = impulse * cos(angle)
+            let dy = impulse * sin(angle)
+            print("Craft rotation: \(angle), dx: \(dx), dy: \(dy)")
+            nozzle!.physicsBody!.applyForce(CGVector(dx: dx, dy: dy))
+        }
+        
         
         self.lastUpdateTime = currentTime
     }

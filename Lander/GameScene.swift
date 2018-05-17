@@ -15,6 +15,7 @@ class GameScene: SKScene {
     var graphs = [String : GKGraph]()
     
     private var lastUpdateTime : TimeInterval = 0
+//    private var camera: SKCameraNode?
     private var craft: SKNode?
     private var nozzle: SKSpriteNode?
     private var nozzleFlame: SKEmitterNode?
@@ -56,20 +57,21 @@ class GameScene: SKScene {
             return
         }
         
+        camera?.physicsBody = SKPhysicsBody(circleOfRadius: 1.0)
         craft.physicsBody = SKPhysicsBody(circleOfRadius: 1.0)
         
-//        setRectangularPhysicsBody(on: body, mass: 15_200.0, collisionMask: shipCollidableMask)
         setRectangularPhysicsBody(on: body, mass: 100.0, collisionMask: shipCollidableMask)
         setRectangularPhysicsBody(on: nozzle, mass: 100.0, collisionMask: shipCollidableMask)
         setRectangularPhysicsBody(on: leftLeg, mass: 100.0, collisionMask: shipCollidableMask)
         setRectangularPhysicsBody(on: rightLeg, mass: 100.0, collisionMask: shipCollidableMask)
         
+
         // Fixes the container node to the actual spacecraft sprites
         let mainAnchor = body.convert(CGPoint(x: 0.5, y: 0.5), to: scene!)
         let mainJoint = SKPhysicsJointFixed.joint(withBodyA: craft.physicsBody!, bodyB: body.physicsBody!, anchor: mainAnchor)
         scene?.physicsWorld.add(mainJoint)
         
-        let nozzleAnchor = nozzle.convert(nozzle.anchorPoint, to: scene!)
+        let nozzleAnchor = nozzle.convert(CGPoint(x: 0.5, y: 1), to: scene!)
         let nozzleJoint = SKPhysicsJointFixed.joint(withBodyA: body.physicsBody!, bodyB: nozzle.physicsBody!, anchor: nozzleAnchor)
         scene?.physicsWorld.add(nozzleJoint)
         
@@ -87,13 +89,12 @@ class GameScene: SKScene {
         ground.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: ground.size.width, height: ground.size.height))
         ground.physicsBody?.isDynamic = false
         ground.physicsBody?.restitution = 0.25
+        ground.physicsBody?.friction = 0.8
         ground.physicsBody?.categoryBitMask = shipCollidableMask
 //        ground.physicsBody?.collisionBitMask = shipCollidableMask
         
         print("Initialized craft properly.")
     }
-    
-
     
     func setRectangularPhysicsBody(on sprite: SKSpriteNode, mass: CGFloat, collisionMask: UInt32) {
         sprite.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: sprite.size.width, height: sprite.size.height))
@@ -158,6 +159,7 @@ class GameScene: SKScene {
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
+        camera?.zRotation = 0
         
         // Initialize _lastUpdateTime if it has not already been
         if (self.lastUpdateTime == 0) {
@@ -172,11 +174,11 @@ class GameScene: SKScene {
             entity.update(deltaTime: dt)
         }
         if lastTouch != nil {
-            let impulse: CGFloat = 100_000
+            let impulse: CGFloat = 125_000
             let angle = craft!.zRotation + (CGFloat.pi / 2)
             let dx = impulse * cos(angle)
             let dy = impulse * sin(angle)
-            print("Craft rotation: \(angle), dx: \(dx), dy: \(dy)")
+//            print("Craft rotation: \(angle), dx: \(dx), dy: \(dy)")
             nozzle!.physicsBody!.applyForce(CGVector(dx: dx, dy: dy))
         }
         

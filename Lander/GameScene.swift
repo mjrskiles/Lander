@@ -36,7 +36,6 @@ class GameScene: SKScene {
         self.lastUpdateTime = 0
         
         initializeCraft()
-        print("Craft area: \(craft?.physicsBody?.area ?? 0)")
         initializeCamera()
         
         label1 = self.childNode(withName: "//landerPos") as? SKLabelNode
@@ -74,6 +73,8 @@ class GameScene: SKScene {
         setRectangularPhysicsBody(on: nozzle, mass: 100.0, collisionMask: shipCollidableMask)
         setBitmapPhysicsBody(on: leftLeg, mass: 100.0, collisionMask: shipCollidableMask)
         setBitmapPhysicsBody(on: rightLeg, mass: 100.0, collisionMask: shipCollidableMask)
+        
+        print("Body area: \(body.physicsBody?.area ?? 0)")
 
         // Fixes the container node to the actual spacecraft sprites
         let mainAnchor = body.convert(CGPoint(x: 0.5, y: 0.5), to: scene!)
@@ -138,7 +139,7 @@ class GameScene: SKScene {
                 if let nozzleFlame = newFlameEmitter() {
                     nozzle.addChild(nozzleFlame)
                     nozzleFlame.zPosition = -1
-                    nozzleFlame.position.y = -20.0
+                    nozzleFlame.position.y = -80.0
                     
                 }
             }

@@ -17,6 +17,8 @@
 		4C0AA7C62092EB2C000EEEB9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4C0AA7C42092EB2C000EEEB9 /* LaunchScreen.storyboard */; };
 		4C0AA7D12092EB2C000EEEB9 /* LanderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C0AA7D02092EB2C000EEEB9 /* LanderTests.swift */; };
 		4C0AA7DC2092EB2C000EEEB9 /* LanderUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C0AA7DB2092EB2C000EEEB9 /* LanderUITests.swift */; };
+		4C21E5D120AF9C6000EE99C2 /* Background.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4C21E5D020AF9C6000EE99C2 /* Background.xcassets */; };
+		4C21E5D320AF9D2B00EE99C2 /* BackgroundTiles.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4C21E5D220AF9D2B00EE99C2 /* BackgroundTiles.sks */; };
 		4C98A2BA20A4CC6F00CBB428 /* SpaceShip.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4C98A2B920A4CC6F00CBB428 /* SpaceShip.xcassets */; };
 		4C98A2BD20A4FBA300CBB428 /* RocketFlame.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4C98A2BB20A4FBA300CBB428 /* RocketFlame.sks */; };
 		4C98A2BE20A4FBA300CBB428 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4C98A2BC20A4FBA300CBB428 /* Assets.xcassets */; };
@@ -57,6 +59,8 @@
 		4C0AA7D72092EB2C000EEEB9 /* LanderUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LanderUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C0AA7DB2092EB2C000EEEB9 /* LanderUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanderUITests.swift; sourceTree = "<group>"; };
 		4C0AA7DD2092EB2C000EEEB9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4C21E5D020AF9C6000EE99C2 /* Background.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Background.xcassets; sourceTree = "<group>"; };
+		4C21E5D220AF9D2B00EE99C2 /* BackgroundTiles.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = BackgroundTiles.sks; sourceTree = "<group>"; };
 		4C98A2B920A4CC6F00CBB428 /* SpaceShip.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = SpaceShip.xcassets; sourceTree = "<group>"; };
 		4C98A2BB20A4FBA300CBB428 /* RocketFlame.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = RocketFlame.sks; sourceTree = "<group>"; };
 		4C98A2BC20A4FBA300CBB428 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -150,6 +154,8 @@
 				4C98A2BB20A4FBA300CBB428 /* RocketFlame.sks */,
 				4C98A2BC20A4FBA300CBB428 /* Assets.xcassets */,
 				4C98A2C120A55DE000CBB428 /* Terrain.xcassets */,
+				4C21E5D020AF9C6000EE99C2 /* Background.xcassets */,
+				4C21E5D220AF9D2B00EE99C2 /* BackgroundTiles.sks */,
 			);
 			path = Assets;
 			sourceTree = "<group>";
@@ -277,10 +283,12 @@
 				4C98A2BA20A4CC6F00CBB428 /* SpaceShip.xcassets in Resources */,
 				4C98A2BD20A4FBA300CBB428 /* RocketFlame.sks in Resources */,
 				4C0AA7C12092EB2A000EEEB9 /* Main.storyboard in Resources */,
+				4C21E5D320AF9D2B00EE99C2 /* BackgroundTiles.sks in Resources */,
 				4C98A2C220A55DE000CBB428 /* Terrain.xcassets in Resources */,
 				4C0AA7B82092EB2A000EEEB9 /* GameScene.sks in Resources */,
 				4C0AA7C32092EB2C000EEEB9 /* Assets.xcassets in Resources */,
 				4C0AA7C62092EB2C000EEEB9 /* LaunchScreen.storyboard in Resources */,
+				4C21E5D120AF9C6000EE99C2 /* Background.xcassets in Resources */,
 				4C98A2BE20A4FBA300CBB428 /* Assets.xcassets in Resources */,
 				4C0AA7BA2092EB2A000EEEB9 /* Actions.sks in Resources */,
 			);

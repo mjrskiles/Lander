@@ -6,6 +6,10 @@
 
 ### Physics
 
+#### The craft 'pulls' left
+
+- The craft always starts to rotate left when in flight. Could this be a floating point rounding error?
+
 #### Unable to correct angular momentum
 
 - When an angular force is applied to the space craft it is impossible to damp it without landing the craft. I.e. the craft keeps "pulling" in one direction indefinitely after the force is applied. One intuitively expects to be able to correct the roll velocity by firing the rocket in the other direction.

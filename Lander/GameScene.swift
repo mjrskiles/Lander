@@ -71,11 +71,19 @@ class GameScene: SKScene {
         
         craft.physicsBody = SKPhysicsBody(circleOfRadius: 1.0)
         
+        
 //        setRectangularPhysicsBody(on: body, mass: 100.0, collisionMask: shipCollidableMask)
         setBitmapPhysicsBody(on: body, mass: 14_000.0, collisionMask: shipCollidableMask)
         setRectangularPhysicsBody(on: nozzle, mass: 179.0, collisionMask: shipCollidableMask)
         setBitmapPhysicsBody(on: leftLeg, mass: 50.0, collisionMask: shipCollidableMask)
         setBitmapPhysicsBody(on: rightLeg, mass: 50.0, collisionMask: shipCollidableMask)
+        
+        // This reduces the bias for the craft to rotate left but doesn't eliminate it
+        craft.physicsBody!.angularDamping = 1
+        body.physicsBody!.angularDamping = 1
+        leftLeg.physicsBody!.angularDamping = 1
+        rightLeg.physicsBody!.angularDamping = 1
+        nozzle.physicsBody!.angularDamping = 1
         
         print("Body area: \(body.physicsBody?.area ?? 0)")
 

@@ -11,6 +11,9 @@ import GameplayKit
 
 class GameScene: SKScene {
     
+    // Constants
+    let METERS_TO_POINTS = 150
+    
     var entities = [GKEntity]()
     var graphs = [String : GKGraph]()
     
@@ -69,10 +72,10 @@ class GameScene: SKScene {
         craft.physicsBody = SKPhysicsBody(circleOfRadius: 1.0)
         
 //        setRectangularPhysicsBody(on: body, mass: 100.0, collisionMask: shipCollidableMask)
-        setBitmapPhysicsBody(on: body, mass: 100.0, collisionMask: shipCollidableMask)
-        setRectangularPhysicsBody(on: nozzle, mass: 100.0, collisionMask: shipCollidableMask)
-        setBitmapPhysicsBody(on: leftLeg, mass: 100.0, collisionMask: shipCollidableMask)
-        setBitmapPhysicsBody(on: rightLeg, mass: 100.0, collisionMask: shipCollidableMask)
+        setBitmapPhysicsBody(on: body, mass: 14_000.0, collisionMask: shipCollidableMask)
+        setRectangularPhysicsBody(on: nozzle, mass: 179.0, collisionMask: shipCollidableMask)
+        setBitmapPhysicsBody(on: leftLeg, mass: 50.0, collisionMask: shipCollidableMask)
+        setBitmapPhysicsBody(on: rightLeg, mass: 50.0, collisionMask: shipCollidableMask)
         
         print("Body area: \(body.physicsBody?.area ?? 0)")
 
@@ -140,11 +143,8 @@ class GameScene: SKScene {
                     nozzle.addChild(nozzleFlame)
                     nozzleFlame.zPosition = -1
                     nozzleFlame.position.y = -80.0
-                    
                 }
             }
-            
-            
         }
     }
     
@@ -185,11 +185,11 @@ class GameScene: SKScene {
         // Called before each frame is rendered
         if let craft = self.craft {
             let craftAbsPos = craft.convert(craft.position, to: self.scene!)
-            label1?.text = String(format: "pos: (%+06.0f, %+06.0f)", craftAbsPos.x, craftAbsPos.y)
-            label2?.text = String(format: "dx: %+06.2f, dy: %+06.2f", craft.physicsBody!.velocity.dx, craft.physicsBody!.velocity.dy)
+            let mToP = CGFloat(METERS_TO_POINTS)
+            label1?.text = String(format: "pos: (%+06.0f, %+06.0f)", craftAbsPos.x / mToP, craftAbsPos.y / mToP)
+            label2?.text = String(format: "dx: %+06.2f, dy: %+06.2f", craft.physicsBody!.velocity.dx / mToP, craft.physicsBody!.velocity.dy / mToP)
             label3?.text = String(format: "ω: %+06.2f   gdx: %+06.2f, gdy:%+06.2f", craft.physicsBody!.angularVelocity, scene!.physicsWorld.gravity.dx, scene!.physicsWorld.gravity.dy)
         }
-        
         
         // Initialize _lastUpdateTime if it has not already been
         if (self.lastUpdateTime == 0) {
@@ -204,7 +204,7 @@ class GameScene: SKScene {
             entity.update(deltaTime: dt)
         }
         if lastTouch != nil {
-            let impulse: CGFloat = 125_000
+            let impulse: CGFloat = 8_000_000
             let angle = craft!.zRotation + (CGFloat.pi / 2)
             let dx = impulse * cos(angle)
             let dy = impulse * sin(angle)

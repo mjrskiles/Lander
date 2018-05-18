@@ -20,8 +20,9 @@ class GameScene: SKScene {
     private var nozzleFlame: SKEmitterNode?
     
     // HUD
-    private var xPosLabel: SKLabelNode?
-    private var yPosLabel: SKLabelNode?
+    private var label1: SKLabelNode?
+    private var label2: SKLabelNode?
+    private var label3: SKLabelNode?
     
     // Physics related
     let shipCollidableMask: UInt32 = 0b0001
@@ -35,10 +36,12 @@ class GameScene: SKScene {
         self.lastUpdateTime = 0
         
         initializeCraft()
+        print("Craft area: \(craft?.physicsBody?.area ?? 0)")
         initializeCamera()
         
-        xPosLabel = self.childNode(withName: "//landerXPos") as? SKLabelNode
-        yPosLabel = self.childNode(withName: "//landerYPos") as? SKLabelNode
+        label1 = self.childNode(withName: "//landerPos") as? SKLabelNode
+        label2 = self.childNode(withName: "//landerDV") as? SKLabelNode
+        label3 = self.childNode(withName: "//landerAV") as? SKLabelNode
     }
     
     // Should probably create a well defined craft format and a loader class for it.
@@ -66,11 +69,11 @@ class GameScene: SKScene {
         
         craft.physicsBody = SKPhysicsBody(circleOfRadius: 1.0)
         
-        setRectangularPhysicsBody(on: body, mass: 100.0, collisionMask: shipCollidableMask)
+//        setRectangularPhysicsBody(on: body, mass: 100.0, collisionMask: shipCollidableMask)
+        setBitmapPhysicsBody(on: body, mass: 100.0, collisionMask: shipCollidableMask)
         setRectangularPhysicsBody(on: nozzle, mass: 100.0, collisionMask: shipCollidableMask)
-        setRectangularPhysicsBody(on: leftLeg, mass: 100.0, collisionMask: shipCollidableMask)
-        setRectangularPhysicsBody(on: rightLeg, mass: 100.0, collisionMask: shipCollidableMask)
-        
+        setBitmapPhysicsBody(on: leftLeg, mass: 100.0, collisionMask: shipCollidableMask)
+        setBitmapPhysicsBody(on: rightLeg, mass: 100.0, collisionMask: shipCollidableMask)
 
         // Fixes the container node to the actual spacecraft sprites
         let mainAnchor = body.convert(CGPoint(x: 0.5, y: 0.5), to: scene!)
@@ -117,6 +120,12 @@ class GameScene: SKScene {
         sprite.physicsBody?.collisionBitMask = collisionMask
     }
     
+    func setBitmapPhysicsBody(on sprite: SKSpriteNode, mass: CGFloat, collisionMask: UInt32) {
+        sprite.physicsBody = SKPhysicsBody(texture: sprite.texture!, size: sprite.size)
+        sprite.physicsBody?.mass = mass
+        sprite.physicsBody?.collisionBitMask = collisionMask
+    }
+    
     func newFlameEmitter() -> SKEmitterNode? {
         return SKEmitterNode(fileNamed: "RocketFlame.sks")
     }
@@ -127,7 +136,6 @@ class GameScene: SKScene {
         if let nozzle = self.nozzle {
             if nozzleFlame == nil {
                 if let nozzleFlame = newFlameEmitter() {
-                    print("Created flame emitter.")
                     nozzle.addChild(nozzleFlame)
                     nozzleFlame.zPosition = -1
                     nozzleFlame.position.y = -20.0
@@ -142,7 +150,7 @@ class GameScene: SKScene {
     func touchMoved(toPoint pos : CGPoint) {
         if let last = lastTouch, let craft = self.craft {
             let dy = pos.y - last.y
-            craft.zRotation -= (dy / rotationScalar)
+            craft.zRotation += (dy / rotationScalar)
             
         }
         lastTouch = pos
@@ -176,8 +184,9 @@ class GameScene: SKScene {
         // Called before each frame is rendered
         if let craft = self.craft {
             let craftAbsPos = craft.convert(craft.position, to: self.scene!)
-            xPosLabel?.text = String(format: "Lander X: %+08.2f", craftAbsPos.x)
-            yPosLabel?.text = String(format: "Lander Y: %+08.2f", craftAbsPos.y)
+            label1?.text = String(format: "pos: (%+06.0f, %+06.0f)", craftAbsPos.x, craftAbsPos.y)
+            label2?.text = String(format: "dx: %+06.2f, dy: %+06.2f", craft.physicsBody!.velocity.dx, craft.physicsBody!.velocity.dy)
+            label3?.text = String(format: "ω: %+06.2f   gdx: %+06.2f, gdy:%+06.2f", craft.physicsBody!.angularVelocity, scene!.physicsWorld.gravity.dx, scene!.physicsWorld.gravity.dy)
         }
         
         

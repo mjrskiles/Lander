@@ -15,10 +15,13 @@ class GameScene: SKScene {
     var graphs = [String : GKGraph]()
     
     private var lastUpdateTime : TimeInterval = 0
-//    private var camera: SKCameraNode?
     private var craft: SKNode?
     private var nozzle: SKSpriteNode?
     private var nozzleFlame: SKEmitterNode?
+    
+    // HUD
+    private var xPosLabel: SKLabelNode?
+    private var yPosLabel: SKLabelNode?
     
     // Physics related
     let shipCollidableMask: UInt32 = 0b0001
@@ -32,6 +35,10 @@ class GameScene: SKScene {
         self.lastUpdateTime = 0
         
         initializeCraft()
+        initializeCamera()
+        
+        xPosLabel = self.childNode(withName: "//landerXPos") as? SKLabelNode
+        yPosLabel = self.childNode(withName: "//landerYPos") as? SKLabelNode
     }
     
     // Should probably create a well defined craft format and a loader class for it.
@@ -57,7 +64,6 @@ class GameScene: SKScene {
             return
         }
         
-        camera?.physicsBody = SKPhysicsBody(circleOfRadius: 1.0)
         craft.physicsBody = SKPhysicsBody(circleOfRadius: 1.0)
         
         setRectangularPhysicsBody(on: body, mass: 100.0, collisionMask: shipCollidableMask)
@@ -94,6 +100,15 @@ class GameScene: SKScene {
 //        ground.physicsBody?.collisionBitMask = shipCollidableMask
         
         print("Initialized craft properly.")
+    }
+    
+    // Sets the camera to always stay near the spacecraft and never rotate.
+    func initializeCamera() {
+        if let camera = self.scene?.camera, let craft = self.craft {
+            let rangeConstraint = SKConstraint.distance(SKRange(upperLimit: 50.0), to: craft)
+            let rotationConstraint = SKConstraint.zRotation(SKRange(constantValue: 0.0))
+            camera.constraints = [rangeConstraint, rotationConstraint]
+        }
     }
     
     func setRectangularPhysicsBody(on sprite: SKSpriteNode, mass: CGFloat, collisionMask: UInt32) {
@@ -159,7 +174,12 @@ class GameScene: SKScene {
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
-        camera?.zRotation = 0
+        if let craft = self.craft {
+            let craftAbsPos = craft.convert(craft.position, to: self.scene!)
+            xPosLabel?.text = String(format: "Lander X: %+08.2f", craftAbsPos.x)
+            yPosLabel?.text = String(format: "Lander Y: %+08.2f", craftAbsPos.y)
+        }
+        
         
         // Initialize _lastUpdateTime if it has not already been
         if (self.lastUpdateTime == 0) {

@@ -23,6 +23,8 @@
 		4C98A2BD20A4FBA300CBB428 /* RocketFlame.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4C98A2BB20A4FBA300CBB428 /* RocketFlame.sks */; };
 		4C98A2BE20A4FBA300CBB428 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4C98A2BC20A4FBA300CBB428 /* Assets.xcassets */; };
 		4C98A2C220A55DE000CBB428 /* Terrain.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4C98A2C120A55DE000CBB428 /* Terrain.xcassets */; };
+		4CDAB4DA20AFD7F000965BBC /* SteeringAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CDAB4D920AFD7F000965BBC /* SteeringAdapter.swift */; };
+		4CDAB4DC20AFE3CC00965BBC /* InputEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CDAB4DB20AFE3CC00965BBC /* InputEvent.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,6 +67,8 @@
 		4C98A2BB20A4FBA300CBB428 /* RocketFlame.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = RocketFlame.sks; sourceTree = "<group>"; };
 		4C98A2BC20A4FBA300CBB428 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4C98A2C120A55DE000CBB428 /* Terrain.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Terrain.xcassets; sourceTree = "<group>"; };
+		4CDAB4D920AFD7F000965BBC /* SteeringAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SteeringAdapter.swift; sourceTree = "<group>"; };
+		4CDAB4DB20AFE3CC00965BBC /* InputEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputEvent.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,6 +129,8 @@
 				4C0AA7C22092EB2C000EEEB9 /* Assets.xcassets */,
 				4C0AA7C42092EB2C000EEEB9 /* LaunchScreen.storyboard */,
 				4C0AA7C72092EB2C000EEEB9 /* Info.plist */,
+				4CDAB4D920AFD7F000965BBC /* SteeringAdapter.swift */,
+				4CDAB4DB20AFE3CC00965BBC /* InputEvent.swift */,
 			);
 			path = Lander;
 			sourceTree = "<group>";
@@ -316,7 +322,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				4C0AA7BC2092EB2A000EEEB9 /* GameScene.swift in Sources */,
+				4CDAB4DC20AFE3CC00965BBC /* InputEvent.swift in Sources */,
 				4C0AA7BE2092EB2A000EEEB9 /* GameViewController.swift in Sources */,
+				4CDAB4DA20AFD7F000965BBC /* SteeringAdapter.swift in Sources */,
 				4C0AA7B62092EB2A000EEEB9 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

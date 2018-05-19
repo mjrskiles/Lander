@@ -11,7 +11,11 @@ import SpriteKit
 import GameplayKit
 
 class GameViewController: UIViewController {
-
+    // Outlets
+    @IBOutlet weak var motionContolSelector: UISwitch!
+    
+    var gameScene: GameScene?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -40,6 +44,9 @@ class GameViewController: UIViewController {
                     
                     view.showsPhysics = true
                 }
+                
+                self.gameScene = sceneNode
+                gameScene?.motionEnabled = motionContolSelector.isOn
             }
         }
     }
@@ -63,5 +70,9 @@ class GameViewController: UIViewController {
     
     @IBAction func returnToHomeScreen(_ sender: UIButton) {
         dismiss(animated: true, completion: nil)
+    }
+    
+    @IBAction func inputTypeWasSelected(_ sender: UISwitch) {
+        gameScene?.motionEnabled = sender.isOn
     }
 }

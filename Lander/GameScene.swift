@@ -8,11 +8,13 @@
 
 import SpriteKit
 import GameplayKit
+import CoreMotion
 
 class GameScene: SKScene {
     
     // Constants
     let METERS_TO_POINTS = 150
+    let MOTION_UPDATE_RATE = 1.0 / 60.0
     
     var entities = [GKEntity]()
     var graphs = [String : GKGraph]()
@@ -30,7 +32,13 @@ class GameScene: SKScene {
     // Physics related
     let shipCollidableMask: UInt32 = 0b0001
     
-    // Touch related
+    // Input related
+    //   Motion
+    var motionEnabled: Bool = true
+    var motionAdapter = MotionSteeringAdapter()
+    let motionManager = CMMotionManager()
+    
+    //   Touch
     private var lastTouch: CGPoint?
     private var rotationScalar: CGFloat = 125.0
 
@@ -41,6 +49,17 @@ class GameScene: SKScene {
     override func sceneDidLoad() {
         // All input will first flow through the scene.
         becomeFirstResponder()
+        
+        // Initialize Device Motion
+        if motionManager.isDeviceMotionAvailable {
+            motionManager.deviceMotionUpdateInterval = MOTION_UPDATE_RATE
+            if motionManager.isMagnetometerAvailable {
+                motionManager.startDeviceMotionUpdates(using: .xArbitraryCorrectedZVertical)
+            } else {
+                motionManager.startDeviceMotionUpdates(using: .xArbitraryZVertical)
+            }
+            print("Started device motion.")
+        }
 
         self.lastUpdateTime = 0
         
@@ -163,6 +182,9 @@ class GameScene: SKScene {
     }
     
     func touchMoved(toPoint pos : CGPoint) {
+        guard !motionEnabled else {
+            return
+        }
         if let last = lastTouch, let craft = self.craft {
             let dy = pos.y - last.y
             craft.zRotation += (dy / rotationScalar)
@@ -217,6 +239,19 @@ class GameScene: SKScene {
         for entity in self.entities {
             entity.update(deltaTime: dt)
         }
+        
+        // Handle input
+        if motionEnabled && motionManager.isDeviceMotionAvailable {
+            if let data = motionManager.deviceMotion {
+                let angleDelta = motionAdapter.handle(MotionInputEvent(from: data))
+                print("Returned angle delta: \(angleDelta) from yaw: \(data.attitude.yaw)")
+                craft?.zRotation += CGFloat(angleDelta)
+            } else {
+                print("Device motion unavailable")
+            }
+
+        }
+        
         if lastTouch != nil {
             let impulse: CGFloat = 8_000_000
             let angle = craft!.zRotation + (CGFloat.pi / 2)

@@ -33,8 +33,14 @@ class GameScene: SKScene {
     // Touch related
     private var lastTouch: CGPoint?
     private var rotationScalar: CGFloat = 125.0
+
+    override var canBecomeFirstResponder: Bool {
+        return true
+    }
     
     override func sceneDidLoad() {
+        // All input will first flow through the scene.
+        becomeFirstResponder()
 
         self.lastUpdateTime = 0
         

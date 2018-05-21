@@ -63,12 +63,35 @@ class GameScene: SKScene {
 
         self.lastUpdateTime = 0
         
+        initializeBackground()
         initializeCraft()
         initializeCamera()
         
         label1 = self.childNode(withName: "//landerPos") as? SKLabelNode
         label2 = self.childNode(withName: "//landerDV") as? SKLabelNode
         label3 = self.childNode(withName: "//landerAV") as? SKLabelNode
+    }
+    
+    func initializeBackground() {
+        if let camera = self.camera {
+            let deepSpaceTex = SKTexture(imageNamed: "stars_z-2")
+            let bg1 = spriteWithSceneHeight(from: deepSpaceTex)
+            let bg2 = spriteWithSceneHeight(from: deepSpaceTex)
+            let bg3 = spriteWithSceneHeight(from: deepSpaceTex)
+            bg1.zRotation = CGFloat.pi / 2
+            bg2.zRotation = CGFloat.pi
+            bg1.position.x = bg1.position.x - bg1.size.width
+            bg3.position.x = bg3.position.x + bg3.size.width
+            camera.addChild(bg1)
+            camera.addChild(bg2)
+            camera.addChild(bg3)
+        }
+    }
+    
+    func spriteWithSceneHeight(from texture: SKTexture) -> SKSpriteNode {
+        let sprite = SKSpriteNode(texture: texture)
+        sprite.size = CGSize(width: scene!.size.height, height: scene!.size.height)
+        return sprite
     }
     
     // Should probably create a well defined craft format and a loader class for it.

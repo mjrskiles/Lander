@@ -19,6 +19,7 @@
 		4C0AA7DC2092EB2C000EEEB9 /* LanderUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C0AA7DB2092EB2C000EEEB9 /* LanderUITests.swift */; };
 		4C21E5D120AF9C6000EE99C2 /* Background.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4C21E5D020AF9C6000EE99C2 /* Background.xcassets */; };
 		4C21E5D320AF9D2B00EE99C2 /* BackgroundTiles.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4C21E5D220AF9D2B00EE99C2 /* BackgroundTiles.sks */; };
+		4C7FEEFA20B29D9800E2A9F1 /* ScrollManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7FEEF920B29D9800E2A9F1 /* ScrollManager.swift */; };
 		4C98A2BA20A4CC6F00CBB428 /* SpaceShip.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4C98A2B920A4CC6F00CBB428 /* SpaceShip.xcassets */; };
 		4C98A2BD20A4FBA300CBB428 /* RocketFlame.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4C98A2BB20A4FBA300CBB428 /* RocketFlame.sks */; };
 		4C98A2BE20A4FBA300CBB428 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4C98A2BC20A4FBA300CBB428 /* Assets.xcassets */; };
@@ -63,6 +64,7 @@
 		4C0AA7DD2092EB2C000EEEB9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4C21E5D020AF9C6000EE99C2 /* Background.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Background.xcassets; sourceTree = "<group>"; };
 		4C21E5D220AF9D2B00EE99C2 /* BackgroundTiles.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = BackgroundTiles.sks; sourceTree = "<group>"; };
+		4C7FEEF920B29D9800E2A9F1 /* ScrollManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollManager.swift; sourceTree = "<group>"; };
 		4C98A2B920A4CC6F00CBB428 /* SpaceShip.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = SpaceShip.xcassets; sourceTree = "<group>"; };
 		4C98A2BB20A4FBA300CBB428 /* RocketFlame.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = RocketFlame.sks; sourceTree = "<group>"; };
 		4C98A2BC20A4FBA300CBB428 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -131,6 +133,7 @@
 				4C0AA7C72092EB2C000EEEB9 /* Info.plist */,
 				4CDAB4D920AFD7F000965BBC /* SteeringAdapter.swift */,
 				4CDAB4DB20AFE3CC00965BBC /* InputEvent.swift */,
+				4C7FEEF920B29D9800E2A9F1 /* ScrollManager.swift */,
 			);
 			path = Lander;
 			sourceTree = "<group>";
@@ -323,6 +326,7 @@
 			files = (
 				4C0AA7BC2092EB2A000EEEB9 /* GameScene.swift in Sources */,
 				4CDAB4DC20AFE3CC00965BBC /* InputEvent.swift in Sources */,
+				4C7FEEFA20B29D9800E2A9F1 /* ScrollManager.swift in Sources */,
 				4C0AA7BE2092EB2A000EEEB9 /* GameViewController.swift in Sources */,
 				4CDAB4DA20AFD7F000965BBC /* SteeringAdapter.swift in Sources */,
 				4C0AA7B62092EB2A000EEEB9 /* AppDelegate.swift in Sources */,

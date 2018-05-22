@@ -29,6 +29,15 @@ class GameScene: SKScene {
     private var label2: SKLabelNode?
     private var label3: SKLabelNode?
     
+    // Background Sprites & scrolling
+    private let MID_SCROLL_RATIO: CGFloat = 0.002
+    private let CLOSE_SCROLL_RATIO: CGFloat = 0.004
+    private var lastCameraPos: CGPoint?
+    private var midBackgroundSprites: [[SKSpriteNode]] = []
+    private var midScrollManager: ScrollManager?
+    private var closeBackgroundSprites: [[SKSpriteNode]] = []
+    private var closeScrollManager: ScrollManager?
+    
     // Physics related
     let shipCollidableMask: UInt32 = 0b0001
     
@@ -63,9 +72,11 @@ class GameScene: SKScene {
 
         self.lastUpdateTime = 0
         
-        initializeBackground()
+//        initializeBackground()
         initializeCraft()
         initializeCamera()
+        lastCameraPos = camera?.position
+        initializeBackground()
         
         label1 = self.childNode(withName: "//landerPos") as? SKLabelNode
         label2 = self.childNode(withName: "//landerDV") as? SKLabelNode
@@ -74,6 +85,8 @@ class GameScene: SKScene {
     
     func initializeBackground() {
         if let camera = self.camera {
+            
+            // static background
             let deepSpaceTex = SKTexture(imageNamed: "stars_z-2")
             let bg1 = spriteWithSceneHeight(from: deepSpaceTex)
             let bg2 = spriteWithSceneHeight(from: deepSpaceTex)
@@ -82,9 +95,34 @@ class GameScene: SKScene {
             bg2.zRotation = CGFloat.pi
             bg1.position.x = bg1.position.x - bg1.size.width
             bg3.position.x = bg3.position.x + bg3.size.width
+            print("Left tile position: \(bg1.position)")
+            print("Middle tile position: \(bg2.position)")
             camera.addChild(bg1)
             camera.addChild(bg2)
             camera.addChild(bg3)
+            
+            initializeScrollingPlane(from: "stars_z-1", attachTo: camera, &midBackgroundSprites)
+            midScrollManager = ScrollManager(in: scene!.size, scrollRatio: MID_SCROLL_RATIO)
+            initializeScrollingPlane(from: "stars_z0", attachTo: camera, &closeBackgroundSprites)
+            closeScrollManager = ScrollManager(in: scene!.size, scrollRatio: CLOSE_SCROLL_RATIO)
+            
+        }
+    }
+    
+    func initializeScrollingPlane(from textureImage: String, attachTo parent: SKNode, _ matrix: inout [[SKSpriteNode]]) {
+        let bgTex = SKTexture(imageNamed: textureImage)
+        
+        for row in 0..<3 {
+            var a: [SKSpriteNode] = []
+            for col in 0..<3 {
+                let bg = spriteWithSceneHeight(from: bgTex)
+                bg.zRotation = (CGFloat.pi / 2) * CGFloat(row + col) // Mix up the rotations to avoid appearance of pattern
+                bg.position.x = bg.size.width * CGFloat(col - 1) // This works specifically for arrays of 3
+                bg.position.y = bg.size.height * CGFloat(row - 1 * (col == 1 ? 1 : -1))
+                a.append(bg)
+                parent.addChild(bg)
+            }
+            matrix.append(a)
         }
     }
     
@@ -243,7 +281,8 @@ class GameScene: SKScene {
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
         if let craft = self.craft {
-            let craftAbsPos = craft.convert(craft.position, to: self.scene!)
+//            let craftAbsPos = craft.convert(camera!.position, to: self.scene!)
+            let craftAbsPos = craft.position
             let mToP = CGFloat(METERS_TO_POINTS)
             label1?.text = String(format: "pos: (%+06.0f, %+06.0f)", craftAbsPos.x / mToP, craftAbsPos.y / mToP)
             label2?.text = String(format: "dx: %+06.2f, dy: %+06.2f", craft.physicsBody!.velocity.dx / mToP, craft.physicsBody!.velocity.dy / mToP)
@@ -263,11 +302,21 @@ class GameScene: SKScene {
             entity.update(deltaTime: dt)
         }
         
+        // Handle scrolling
+        let dx = camera!.position.x - (lastCameraPos?.x ?? 0)
+        let dy = camera!.position.y - (lastCameraPos?.y ?? 0)
+        midScrollManager?.updatePositions(of: &midBackgroundSprites, dx, dy)
+        closeScrollManager?.updatePositions(of: &closeBackgroundSprites, dx, dy)
+        
+        lastCameraPos = camera!.position
+        
+//        print("Camera position: \(camera!.position)")
+        
         // Handle input
         if motionEnabled && motionManager.isDeviceMotionAvailable {
             if let data = motionManager.deviceMotion {
                 let angleDelta = motionAdapter.handle(MotionInputEvent(from: data))
-                print("Returned angle delta: \(angleDelta) from yaw: \(data.attitude.yaw)")
+//                print("Returned angle delta: \(angleDelta) from yaw: \(data.attitude.yaw)")
                 craft?.zRotation += CGFloat(angleDelta)
             } else {
                 print("Device motion unavailable")

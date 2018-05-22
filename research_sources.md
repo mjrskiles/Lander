@@ -31,3 +31,23 @@ Moon Lander by Tom Kelly
 
 
 ## About Physics
+
+### How this app deals with gravity
+
+One of the most important considerations to make in this game are the physics related to gravity. Although SpriteKit provides much of the physics functionality out of the box, there are a few important things to note. 
+
+- First, although the acceleration of the 'world gravity' can be set in the scene's SKPhysicsWorld object, the acceleration is applied uniformly regardless of distance between bodies. In fact, There is no concept of the physics world's center in SpriteKit.
+
+- Second, there is no concept of a circular world within SpriteKit. The simulation takes place on a 2D plane.
+
+By keeping in mind some simple formulas, we should be able to create a suitably believable simulation within the SpriteKit framework.
+
+One of the biggest problems posed by the uniformity of gravity and flat world is how to put something in orbit. You can't simply give the Lander a starting position high in the sky and enough velocity to keep it in orbit. It would just fall out of the sky anyway, because the acceleration due to gravity is the same as at the surface.
+
+Therefore, we need to compensate the SKPhysicsWorld's dy setting based on the altitude of the craft. Using Newton's law of universal gravitation, we can calculate a suitable force.
+
+`F = G((m1*m2) / r^2)`
+
+Where G is the gravitational constant `6.674×10^−11 m^3⋅kg^−1⋅s^−2`, m1 and m2 are the masses of the objects, and r is the distance between their centers.
+
+Once we have F, we can use the equation `F = ma` to determine the acceleration that should be applied to the spacecraft by `a = F/m`. This could be updated every frame, but it might make more sense to update it periodically in 'zones' to avoid unnecessary calculations.

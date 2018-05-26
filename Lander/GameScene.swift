@@ -325,7 +325,7 @@ class GameScene: SKScene {
         }
         
         if lastTouch != nil {
-            let impulse: CGFloat = 8_000_000
+            let impulse: CGFloat = 11_000_000
             let angle = craft!.zRotation + (CGFloat.pi / 2)
             let dx = impulse * cos(angle)
             let dy = impulse * sin(angle)

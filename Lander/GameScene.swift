@@ -42,7 +42,9 @@ class GameScene: SKScene {
     private var closeScrollManager: ScrollManager?
     
     // Physics related
+    var world: SKNode?
     let shipCollidableMask: UInt32 = 0b0001
+    var firstPass = true
     
     // Input related
     //   Motion
@@ -74,6 +76,14 @@ class GameScene: SKScene {
         }
 
         self.lastUpdateTime = 0
+        
+        // Set up radial gravity
+//        self.world = self.childNode(withName: "//World")
+//        let gravity = SKFieldNode.radialGravityField()
+//        gravity.strength = 1.62
+//        gravity.falloff = 0
+//        world?.addChild(gravity)
+        
         
 //        initializeBackground()
         initializeCraft()
@@ -219,6 +229,12 @@ class GameScene: SKScene {
         rightLeg.physicsBody!.angularDamping = 1
         nozzle.physicsBody!.angularDamping = 1
         
+        craft.physicsBody!.linearDamping = 0
+        body.physicsBody!.linearDamping = 0
+        leftLeg.physicsBody!.linearDamping = 0
+        rightLeg.physicsBody!.linearDamping = 0
+        nozzle.physicsBody!.linearDamping = 0
+        
         print("Body area: \(body.physicsBody?.area ?? 0)")
 
         // Fixes the container node to the actual spacecraft sprites
@@ -247,6 +263,8 @@ class GameScene: SKScene {
         ground.physicsBody?.friction = 0.8
         ground.physicsBody?.categoryBitMask = shipCollidableMask
 //        ground.physicsBody?.collisionBitMask = shipCollidableMask
+        
+        craft.position.y = CGFloat(15_000 * METERS_TO_POINTS)
         
         print("Initialized craft properly.")
     }
@@ -329,7 +347,8 @@ class GameScene: SKScene {
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
         if let craft = self.craft {
-//            let craftAbsPos = craft.convert(camera!.position, to: self.scene!)
+            
+            
             let craftAbsPos = craft.position
             let dy = craft.physicsBody!.velocity.dy
             let dx = craft.physicsBody!.velocity.dx
@@ -380,12 +399,22 @@ class GameScene: SKScene {
         }
         
         if lastTouch != nil {
-            let impulse: CGFloat = 8_000_000
+            let impulse: CGFloat = 80_000_000
             let angle = craft!.zRotation + (CGFloat.pi / 2)
             let dx = impulse * cos(angle)
             let dy = impulse * sin(angle)
 //            print("Craft rotation: \(angle), dx: \(dx), dy: \(dy)")
             nozzle!.physicsBody!.applyForce(CGVector(dx: dx, dy: dy))
+        }
+        
+        if firstPass {
+            if let body = craft!.childNode(withName: "//body") as? SKSpriteNode {
+//                let initialImpulse = SKAction.applyForce(CGVector(dx: 258_142_044.0, dy: 0.0), duration: 0.001)
+//                body.run(initialImpulse)
+                body.physicsBody!.applyImpulse(CGVector(dx: 258_142_044.0, dy: 0.0))
+                firstPass = false
+                print("Applied first pass impulse")
+            }
         }
         
         

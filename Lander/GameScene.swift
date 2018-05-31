@@ -264,7 +264,7 @@ class GameScene: SKScene {
         ground.physicsBody?.categoryBitMask = shipCollidableMask
 //        ground.physicsBody?.collisionBitMask = shipCollidableMask
         
-        craft.position.y = CGFloat(15_000 * METERS_TO_POINTS)
+        craft.position.y = CGFloat(15_000_000 * METERS_TO_POINTS)
         
         print("Initialized craft properly.")
     }
@@ -349,12 +349,16 @@ class GameScene: SKScene {
         if let craft = self.craft {
             
             
+            let mToP = CGFloat(METERS_TO_POINTS)
             let craftAbsPos = craft.position
+            let absX = craftAbsPos.x / mToP
+            let absY = craftAbsPos.y / mToP
+            let r = ((absX * absX) + (absY * absY)).squareRoot()
             let dy = craft.physicsBody!.velocity.dy
             let dx = craft.physicsBody!.velocity.dx
-            let mToP = CGFloat(METERS_TO_POINTS)
-            label1?.text = String(format: "pos: (%+06.0f, %+06.0f)", craftAbsPos.x / mToP, craftAbsPos.y / mToP)
-            label2?.text = String(format: "dx: %+06.2f, dy: %+06.2f", dx / mToP, dy / mToP)
+            
+            label1?.text = String(format: "r: %08.0f abs pos: (%+06.0f, %+06.0f)", r, craftAbsPos.x / mToP, craftAbsPos.y / mToP)
+            label2?.text = String(format: "dx: %+06.2f, dy: %+06.2f", dx, dy)
             label3?.text = String(format: "ω: %+06.2f   gdx: %+06.2f, gdy:%+06.2f", craft.physicsBody!.angularVelocity, scene!.physicsWorld.gravity.dx, scene!.physicsWorld.gravity.dy)
             
             // Update the UI

@@ -28,6 +28,9 @@ class GameScene: SKScene {
     private var label1: SKLabelNode?
     private var label2: SKLabelNode?
     private var label3: SKLabelNode?
+    private var attitudeCrosshair: SKNode?
+    private var progradeIcon: SKNode?
+    private var retrogradeIcon: SKNode?
     
     // Background Sprites & scrolling
     private let MID_SCROLL_RATIO: CGFloat = 0.002
@@ -75,6 +78,7 @@ class GameScene: SKScene {
 //        initializeBackground()
         initializeCraft()
         initializeCamera()
+        initializeUI()
         lastCameraPos = camera?.position
         initializeBackground()
         
@@ -107,6 +111,50 @@ class GameScene: SKScene {
             closeScrollManager = ScrollManager(in: scene!.size, scrollRatio: CLOSE_SCROLL_RATIO)
             
         }
+    }
+    
+    func initializeUI() {
+        let path = CGMutablePath()
+        let radius = (scene!.size.height * 0.8) / 2
+        path.addArc(center: CGPoint.zero,
+                    radius: radius,
+                    startAngle: 0,
+                    endAngle: CGFloat.pi * 2,
+                    clockwise: true)
+        let navArc = SKShapeNode(path: path)
+        navArc.lineWidth = 5
+        navArc.strokeColor = .white
+        navArc.glowWidth = 0.5
+        navArc.alpha = 0.6
+        navArc.zPosition = 1000
+        
+        // crosshair
+        let attitudeCrosshairSprite = SKSpriteNode(imageNamed: "attitude_crosshair_80x42")
+        attitudeCrosshair = SKNode()
+        let arcPathPos = attitudeCrosshair!.convert(CGPoint(x: 0, y: radius), from: scene!)
+        attitudeCrosshair?.addChild(attitudeCrosshairSprite)
+        attitudeCrosshairSprite.position = arcPathPos
+        attitudeCrosshair!.zPosition = navArc.zPosition + 10
+        
+        // prograde
+        let progradeSprite = SKSpriteNode(imageNamed: "prograde_60x60")
+        progradeIcon = SKNode()
+        progradeIcon?.addChild(progradeSprite)
+        progradeSprite.position = arcPathPos
+        progradeIcon!.zPosition = navArc.zPosition + 1
+        
+        // retrograde
+        let retrogradeSprite = SKSpriteNode(imageNamed: "retrograde_60x60")
+        retrogradeIcon = SKNode()
+        retrogradeIcon?.addChild(retrogradeSprite)
+        retrogradeSprite.position = arcPathPos
+        retrogradeIcon!.zPosition = navArc.zPosition + 1
+        
+        
+        camera?.addChild(navArc)
+        camera?.addChild(attitudeCrosshair!)
+        camera?.addChild(progradeIcon!)
+        camera?.addChild(retrogradeIcon!)
     }
     
     func initializeScrollingPlane(from textureImage: String, attachTo parent: SKNode, _ matrix: inout [[SKSpriteNode]]) {
@@ -283,10 +331,17 @@ class GameScene: SKScene {
         if let craft = self.craft {
 //            let craftAbsPos = craft.convert(camera!.position, to: self.scene!)
             let craftAbsPos = craft.position
+            let dy = craft.physicsBody!.velocity.dy
+            let dx = craft.physicsBody!.velocity.dx
             let mToP = CGFloat(METERS_TO_POINTS)
             label1?.text = String(format: "pos: (%+06.0f, %+06.0f)", craftAbsPos.x / mToP, craftAbsPos.y / mToP)
-            label2?.text = String(format: "dx: %+06.2f, dy: %+06.2f", craft.physicsBody!.velocity.dx / mToP, craft.physicsBody!.velocity.dy / mToP)
+            label2?.text = String(format: "dx: %+06.2f, dy: %+06.2f", dx / mToP, dy / mToP)
             label3?.text = String(format: "ω: %+06.2f   gdx: %+06.2f, gdy:%+06.2f", craft.physicsBody!.angularVelocity, scene!.physicsWorld.gravity.dx, scene!.physicsWorld.gravity.dy)
+            
+            // Update the UI
+            attitudeCrosshair?.zRotation = craft.zRotation
+            progradeIcon?.zRotation = atan2(dy, dx) - (CGFloat.pi / 2)
+            retrogradeIcon?.zRotation = atan2(dy, dx) + (CGFloat.pi / 2)
         }
         
         // Initialize _lastUpdateTime if it has not already been

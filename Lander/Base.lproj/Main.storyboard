@@ -54,7 +54,7 @@
                                     <action selector="returnToHomeScreen:" destination="BV1-FR-VrT" eventType="touchUpInside" id="3sG-w1-XsB"/>
                                 </connections>
                             </button>
-                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Hlc-75-w3F">
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Hlc-75-w3F">
                                 <rect key="frame" x="578" y="20" width="51" height="31"/>
                                 <connections>
                                     <action selector="inputTypeWasSelected:" destination="BV1-FR-VrT" eventType="valueChanged" id="Ubf-69-NTD"/>

@@ -48,13 +48,13 @@ class ScrollManager {
         
         if spriteMatrix[0][0].position.y > CGFloat(halfScreenHeight + halfSideLength) {
             rotateUp(&spriteMatrix)
-            print("rotated up because \(spriteMatrix[0][0].position.y.description) > \(CGFloat(halfScreenHeight) + (halfSideLength))")
+//            print("rotated up because \(spriteMatrix[0][0].position.y.description) > \(CGFloat(halfScreenHeight) + (halfSideLength))")
         }
         
         let rowCount = spriteMatrix.count
         if spriteMatrix[rowCount - 1][0].position.y < CGFloat(0.0 - halfScreenHeight - halfSideLength) {
             rotateDown(&spriteMatrix)
-            print("rotated down because \(spriteMatrix[rowCount - 1][0].position.y.description) < \((0 - (halfScreenHeight) - (halfSideLength)))")
+//            print("rotated down because \(spriteMatrix[rowCount - 1][0].position.y.description) < \((0 - (halfScreenHeight) - (halfSideLength)))")
         }
     }
     

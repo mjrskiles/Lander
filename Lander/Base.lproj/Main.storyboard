@@ -10,11 +10,11 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Launch View Controller-->
         <scene sceneID="XNL-x1-s5T">
             <objects>
-                <viewController id="kdU-b3-yox" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="3pv-01-FZO">
+                <viewController id="kdU-b3-yox" customClass="LaunchViewController" customModule="Lander" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="3pv-01-FZO" customClass="UIControl">
                         <rect key="frame" x="0.0" y="0.0" width="667" height="375"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
@@ -26,18 +26,44 @@
                                     <segue destination="BV1-FR-VrT" kind="show" id="bXq-Y6-H4k"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Initial Impulse:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aPl-HJ-9Kq">
+                                <rect key="frame" x="194" y="60" width="109" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="LJb-ec-wMu">
+                                <rect key="frame" x="322" y="55" width="194" height="30"/>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" keyboardType="decimalPad"/>
+                                <connections>
+                                    <action selector="editedImpulse:" destination="kdU-b3-yox" eventType="editingDidEndOnExit" id="6zO-08-SYA"/>
+                                </connections>
+                            </textField>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="aPl-HJ-9Kq" firstAttribute="top" secondItem="OI3-kp-QWD" secondAttribute="top" constant="60" id="FXe-eB-Jns"/>
+                            <constraint firstItem="OI3-kp-QWD" firstAttribute="trailing" secondItem="LJb-ec-wMu" secondAttribute="trailing" constant="151" id="KH6-Bt-UoH"/>
                             <constraint firstItem="fOL-Ol-CkK" firstAttribute="centerX" secondItem="3pv-01-FZO" secondAttribute="centerX" id="N8H-oo-XDN"/>
+                            <constraint firstItem="aPl-HJ-9Kq" firstAttribute="leading" secondItem="OI3-kp-QWD" secondAttribute="leading" constant="194" id="UeG-Uj-vAb"/>
+                            <constraint firstItem="LJb-ec-wMu" firstAttribute="centerY" secondItem="aPl-HJ-9Kq" secondAttribute="centerY" id="dem-BY-33h"/>
                             <constraint firstItem="fOL-Ol-CkK" firstAttribute="centerY" secondItem="3pv-01-FZO" secondAttribute="centerY" id="hro-EC-gZe"/>
+                            <constraint firstItem="LJb-ec-wMu" firstAttribute="leading" secondItem="aPl-HJ-9Kq" secondAttribute="trailing" constant="19" id="jak-Xg-7Mv"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="OI3-kp-QWD"/>
+                        <connections>
+                            <action selector="backgroundTouched:" destination="kdU-b3-yox" eventType="touchDown" id="J4g-Yn-Z4i"/>
+                        </connections>
                     </view>
+                    <connections>
+                        <outlet property="impulseTextField" destination="LJb-ec-wMu" id="iZY-C8-sai"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xFl-YG-0hE" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-793" y="17"/>
+            <point key="canvasLocation" x="-793.8530734632684" y="16.800000000000001"/>
         </scene>
         <!--Game View Controller-->
         <scene sceneID="tXr-a1-R10">
@@ -54,7 +80,7 @@
                                     <action selector="returnToHomeScreen:" destination="BV1-FR-VrT" eventType="touchUpInside" id="3sG-w1-XsB"/>
                                 </connections>
                             </button>
-                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Hlc-75-w3F">
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Hlc-75-w3F">
                                 <rect key="frame" x="578" y="20" width="51" height="31"/>
                                 <connections>
                                     <action selector="inputTypeWasSelected:" destination="BV1-FR-VrT" eventType="valueChanged" id="Ubf-69-NTD"/>

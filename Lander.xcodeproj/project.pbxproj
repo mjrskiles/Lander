@@ -24,6 +24,9 @@
 		4C98A2BD20A4FBA300CBB428 /* RocketFlame.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4C98A2BB20A4FBA300CBB428 /* RocketFlame.sks */; };
 		4C98A2BE20A4FBA300CBB428 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4C98A2BC20A4FBA300CBB428 /* Assets.xcassets */; };
 		4C98A2C220A55DE000CBB428 /* Terrain.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4C98A2C120A55DE000CBB428 /* Terrain.xcassets */; };
+		4CAF5A1120BE77BD00267E09 /* UI.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4CAF5A1020BE77BD00267E09 /* UI.xcassets */; };
+		4CAF5A1320BFCE4100267E09 /* LevelSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CAF5A1220BFCE4100267E09 /* LevelSettings.swift */; };
+		4CAF5A1720BFD04400267E09 /* LaunchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CAF5A1620BFD04400267E09 /* LaunchViewController.swift */; };
 		4CDAB4DA20AFD7F000965BBC /* SteeringAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CDAB4D920AFD7F000965BBC /* SteeringAdapter.swift */; };
 		4CDAB4DC20AFE3CC00965BBC /* InputEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CDAB4DB20AFE3CC00965BBC /* InputEvent.swift */; };
 /* End PBXBuildFile section */
@@ -69,6 +72,9 @@
 		4C98A2BB20A4FBA300CBB428 /* RocketFlame.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = RocketFlame.sks; sourceTree = "<group>"; };
 		4C98A2BC20A4FBA300CBB428 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4C98A2C120A55DE000CBB428 /* Terrain.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Terrain.xcassets; sourceTree = "<group>"; };
+		4CAF5A1020BE77BD00267E09 /* UI.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = UI.xcassets; sourceTree = "<group>"; };
+		4CAF5A1220BFCE4100267E09 /* LevelSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelSettings.swift; sourceTree = "<group>"; };
+		4CAF5A1620BFD04400267E09 /* LaunchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchViewController.swift; sourceTree = "<group>"; };
 		4CDAB4D920AFD7F000965BBC /* SteeringAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SteeringAdapter.swift; sourceTree = "<group>"; };
 		4CDAB4DB20AFE3CC00965BBC /* InputEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputEvent.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -134,6 +140,8 @@
 				4CDAB4D920AFD7F000965BBC /* SteeringAdapter.swift */,
 				4CDAB4DB20AFE3CC00965BBC /* InputEvent.swift */,
 				4C7FEEF920B29D9800E2A9F1 /* ScrollManager.swift */,
+				4CAF5A1220BFCE4100267E09 /* LevelSettings.swift */,
+				4CAF5A1620BFD04400267E09 /* LaunchViewController.swift */,
 			);
 			path = Lander;
 			sourceTree = "<group>";
@@ -165,6 +173,7 @@
 				4C98A2C120A55DE000CBB428 /* Terrain.xcassets */,
 				4C21E5D020AF9C6000EE99C2 /* Background.xcassets */,
 				4C21E5D220AF9D2B00EE99C2 /* BackgroundTiles.sks */,
+				4CAF5A1020BE77BD00267E09 /* UI.xcassets */,
 			);
 			path = Assets;
 			sourceTree = "<group>";
@@ -298,6 +307,7 @@
 				4C0AA7C32092EB2C000EEEB9 /* Assets.xcassets in Resources */,
 				4C0AA7C62092EB2C000EEEB9 /* LaunchScreen.storyboard in Resources */,
 				4C21E5D120AF9C6000EE99C2 /* Background.xcassets in Resources */,
+				4CAF5A1120BE77BD00267E09 /* UI.xcassets in Resources */,
 				4C98A2BE20A4FBA300CBB428 /* Assets.xcassets in Resources */,
 				4C0AA7BA2092EB2A000EEEB9 /* Actions.sks in Resources */,
 			);
@@ -328,8 +338,10 @@
 				4CDAB4DC20AFE3CC00965BBC /* InputEvent.swift in Sources */,
 				4C7FEEFA20B29D9800E2A9F1 /* ScrollManager.swift in Sources */,
 				4C0AA7BE2092EB2A000EEEB9 /* GameViewController.swift in Sources */,
+				4CAF5A1320BFCE4100267E09 /* LevelSettings.swift in Sources */,
 				4CDAB4DA20AFD7F000965BBC /* SteeringAdapter.swift in Sources */,
 				4C0AA7B62092EB2A000EEEB9 /* AppDelegate.swift in Sources */,
+				4CAF5A1720BFD04400267E09 /* LaunchViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

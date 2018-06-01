@@ -45,6 +45,7 @@ https://www.nasa.gov/mission_pages/apollo/missions/apollo11.html
 
 We will assume a 15km altitude circular orbit for the injection burn. (This is about 1,752 km from the moon center)
 - This requires an orbital velocity of ~1,672 m/s (according to Lisa, who is a jerk).
+- v=sqrt((GM)/r) to find the velocity required for a circular orbit with radius r
 
 One of the most important considerations to make in this game are the physics related to gravity. Although SpriteKit provides much of the physics functionality out of the box, there are a few important things to note. 
 

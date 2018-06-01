@@ -13,7 +13,7 @@ import CoreMotion
 class GameScene: SKScene {
     
     // Constants
-    let METERS_TO_POINTS: CGFloat = 150
+    let METERS_TO_POINTS: CGFloat = 1.50
     let MOTION_UPDATE_RATE = 1.0 / 60.0
     let MOON_RADIUS: CGFloat = 1737.0 // km
     let GRAVITY: CGFloat = -1.62 // m/s^2
@@ -367,6 +367,9 @@ class GameScene: SKScene {
             let theta = atan2(absY, absX)
             let gy = GRAVITY * sin(theta)
             let gx = GRAVITY * cos(theta)
+            
+            scene!.physicsWorld.gravity.dy = gy
+            scene!.physicsWorld.gravity.dx = gx
             
             // velocity
             let dy = craft.physicsBody!.velocity.dy

@@ -13,8 +13,11 @@ import CoreMotion
 class GameScene: SKScene {
     
     // Constants
-    let METERS_TO_POINTS = 150
+    let METERS_TO_POINTS: CGFloat = 150
     let MOTION_UPDATE_RATE = 1.0 / 60.0
+    let MOON_RADIUS: CGFloat = 1737.0 // km
+    let GRAVITY: CGFloat = -1.62 // m/s^2
+    let km: CGFloat = 1000.0
     
     var entities = [GKEntity]()
     var graphs = [String : GKGraph]()
@@ -84,8 +87,6 @@ class GameScene: SKScene {
 //        gravity.falloff = 0
 //        world?.addChild(gravity)
         
-        
-//        initializeBackground()
         initializeCraft()
         initializeCamera()
         initializeUI()
@@ -217,10 +218,10 @@ class GameScene: SKScene {
         
         
 //        setRectangularPhysicsBody(on: body, mass: 100.0, collisionMask: shipCollidableMask)
-        setBitmapPhysicsBody(on: body, mass: 14_000.0, collisionMask: shipCollidableMask)
-        setRectangularPhysicsBody(on: nozzle, mass: 179.0, collisionMask: shipCollidableMask)
-        setBitmapPhysicsBody(on: leftLeg, mass: 50.0, collisionMask: shipCollidableMask)
-        setBitmapPhysicsBody(on: rightLeg, mass: 50.0, collisionMask: shipCollidableMask)
+        setBitmapPhysicsBody(on: body, mass: 14000.0, collisionMask: shipCollidableMask)
+        setRectangularPhysicsBody(on: nozzle, mass: 179, collisionMask: shipCollidableMask)
+        setBitmapPhysicsBody(on: leftLeg, mass: 50, collisionMask: shipCollidableMask)
+        setBitmapPhysicsBody(on: rightLeg, mass: 50, collisionMask: shipCollidableMask)
         
         // This reduces the bias for the craft to rotate left but doesn't eliminate it
         craft.physicsBody!.angularDamping = 1
@@ -236,6 +237,8 @@ class GameScene: SKScene {
         nozzle.physicsBody!.linearDamping = 0
         
         print("Body area: \(body.physicsBody?.area ?? 0)")
+        print("Body mass: \(body.physicsBody!.mass)")
+        print("Body density: \(body.physicsBody!.density)")
 
         // Fixes the container node to the actual spacecraft sprites
         let mainAnchor = body.convert(CGPoint(x: 0.5, y: 0.5), to: scene!)
@@ -264,7 +267,11 @@ class GameScene: SKScene {
         ground.physicsBody?.categoryBitMask = shipCollidableMask
 //        ground.physicsBody?.collisionBitMask = shipCollidableMask
         
-        craft.position.y = CGFloat(15_000_000 * METERS_TO_POINTS)
+        
+        let r = (MOON_RADIUS + 15) * km * METERS_TO_POINTS
+//        craft.position.y = MOON_RADIUS * km * METERS_TO_POINTS
+//        ground.position.y = craft.position.y - 10
+        print("Set initial r to %08f", r)
         
         print("Initialized craft properly.")
     }
@@ -272,7 +279,7 @@ class GameScene: SKScene {
     // Sets the camera to always stay near the spacecraft and never rotate.
     func initializeCamera() {
         if let camera = self.scene?.camera, let craft = self.craft {
-            let rangeConstraint = SKConstraint.distance(SKRange(upperLimit: 200.0), to: craft)
+            let rangeConstraint = SKConstraint.distance(SKRange(upperLimit: 100.0), to: craft)
             let rotationConstraint = SKConstraint.zRotation(SKRange(constantValue: 0.0))
             camera.constraints = [rangeConstraint, rotationConstraint]
         }
@@ -348,18 +355,27 @@ class GameScene: SKScene {
         // Called before each frame is rendered
         if let craft = self.craft {
             
-            
+            // position
             let mToP = CGFloat(METERS_TO_POINTS)
             let craftAbsPos = craft.position
             let absX = craftAbsPos.x / mToP
             let absY = craftAbsPos.y / mToP
             let r = ((absX * absX) + (absY * absY)).squareRoot()
+            let alt = (r - (MOON_RADIUS * km)) / km
+            
+            // angle
+            let theta = atan2(absY, absX)
+            let gy = GRAVITY * sin(theta)
+            let gx = GRAVITY * cos(theta)
+            
+            // velocity
             let dy = craft.physicsBody!.velocity.dy
             let dx = craft.physicsBody!.velocity.dx
+            let v = ((dx * dx) + (dy * dy)).squareRoot()
             
-            label1?.text = String(format: "r: %08.0f abs pos: (%+06.0f, %+06.0f)", r, craftAbsPos.x / mToP, craftAbsPos.y / mToP)
-            label2?.text = String(format: "dx: %+06.2f, dy: %+06.2f", dx, dy)
-            label3?.text = String(format: "ω: %+06.2f   gdx: %+06.2f, gdy:%+06.2f", craft.physicsBody!.angularVelocity, scene!.physicsWorld.gravity.dx, scene!.physicsWorld.gravity.dy)
+            label1?.text = String(format: "alt: %6.3f km, r: %08.0f, abs pos: (%+08.0f, %+08.0f)", alt, r, craftAbsPos.x / mToP, craftAbsPos.y / mToP)
+            label2?.text = String(format: "v: %08.2f m/s, dx: %+06.2f, dy: %+06.2f", v, dx, dy)
+            label3?.text = String(format: "orbital angle: %+05.3f, gy %+05.3f, gx %+05.3f", theta, gy, gx)
             
             // Update the UI
             attitudeCrosshair?.zRotation = craft.zRotation
@@ -394,7 +410,6 @@ class GameScene: SKScene {
         if motionEnabled && motionManager.isDeviceMotionAvailable {
             if let data = motionManager.deviceMotion {
                 let angleDelta = motionAdapter.handle(MotionInputEvent(from: data))
-//                print("Returned angle delta: \(angleDelta) from yaw: \(data.attitude.yaw)")
                 craft?.zRotation += CGFloat(angleDelta)
             } else {
                 print("Device motion unavailable")
@@ -403,21 +418,20 @@ class GameScene: SKScene {
         }
         
         if lastTouch != nil {
-            let impulse: CGFloat = 80_000_000
+            let impulse: CGFloat = 4500_000
             let angle = craft!.zRotation + (CGFloat.pi / 2)
             let dx = impulse * cos(angle)
             let dy = impulse * sin(angle)
-//            print("Craft rotation: \(angle), dx: \(dx), dy: \(dy)")
             nozzle!.physicsBody!.applyForce(CGVector(dx: dx, dy: dy))
         }
         
         if firstPass {
             if let body = craft!.childNode(withName: "//body") as? SKSpriteNode {
-//                let initialImpulse = SKAction.applyForce(CGVector(dx: 258_142_044.0, dy: 0.0), duration: 0.001)
-//                body.run(initialImpulse)
-                body.physicsBody!.applyImpulse(CGVector(dx: 258_142_044.0, dy: 0.0))
+//                craft!.zRotation = CGFloat.pi / 2
+                let impulse = LevelSettings.instance.initialImpulse
+                body.physicsBody!.applyImpulse(CGVector(dx: impulse, dy: 0.0))
                 firstPass = false
-                print("Applied first pass impulse")
+                print(String(format: "Applied first pass impulse, used value %8.0f", impulse))
             }
         }
         

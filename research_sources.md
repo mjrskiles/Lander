@@ -28,6 +28,13 @@ https://en.wikipedia.org/wiki/Descent_Propulsion_System
 
 Moon Lander by Tom Kelly
 
+https://www.nasa.gov/mission_pages/apollo/missions/apollo11.html
+
+### The Moon
+
+- Mean radius: 1,737 km
+- Mass: 7.342x10^22 kg
+
 ## About SpriteKit
 
 
@@ -36,8 +43,8 @@ Moon Lander by Tom Kelly
 
 ### How this app deals with gravity
 
-We will assume a 15km circular orbit for the injection burn.
-- This requires an orbital velocity of ~18,078.44 m/s (according to Lisa, who is a jerk).
+We will assume a 15km altitude circular orbit for the injection burn. (This is about 1,752 km from the moon center)
+- This requires an orbital velocity of ~1,672 m/s (according to Lisa, who is a jerk).
 
 One of the most important considerations to make in this game are the physics related to gravity. Although SpriteKit provides much of the physics functionality out of the box, there are a few important things to note. 
 

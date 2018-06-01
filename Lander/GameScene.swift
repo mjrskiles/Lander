@@ -218,10 +218,10 @@ class GameScene: SKScene {
         
         
 //        setRectangularPhysicsBody(on: body, mass: 100.0, collisionMask: shipCollidableMask)
-        setBitmapPhysicsBody(on: body, mass: 14000.0, collisionMask: shipCollidableMask)
-        setRectangularPhysicsBody(on: nozzle, mass: 179, collisionMask: shipCollidableMask)
-        setBitmapPhysicsBody(on: leftLeg, mass: 50, collisionMask: shipCollidableMask)
-        setBitmapPhysicsBody(on: rightLeg, mass: 50, collisionMask: shipCollidableMask)
+        setBitmapPhysicsBody(on: body, mass: 140.0, collisionMask: shipCollidableMask)
+        setRectangularPhysicsBody(on: nozzle, mass: 1.79, collisionMask: shipCollidableMask)
+        setBitmapPhysicsBody(on: leftLeg, mass: 0.50, collisionMask: shipCollidableMask)
+        setBitmapPhysicsBody(on: rightLeg, mass: 0.50, collisionMask: shipCollidableMask)
         
         // This reduces the bias for the craft to rotate left but doesn't eliminate it
         craft.physicsBody!.angularDamping = 1
@@ -269,7 +269,7 @@ class GameScene: SKScene {
         
         
         let r = (MOON_RADIUS + 15) * km * METERS_TO_POINTS
-//        craft.position.y = MOON_RADIUS * km * METERS_TO_POINTS
+        craft.position.y = r
 //        ground.position.y = craft.position.y - 10
         print("Set initial r to %08f", r)
         
@@ -418,7 +418,7 @@ class GameScene: SKScene {
         }
         
         if lastTouch != nil {
-            let impulse: CGFloat = 4500_000
+            let impulse: CGFloat = 45000
             let angle = craft!.zRotation + (CGFloat.pi / 2)
             let dx = impulse * cos(angle)
             let dy = impulse * sin(angle)
@@ -427,7 +427,7 @@ class GameScene: SKScene {
         
         if firstPass {
             if let body = craft!.childNode(withName: "//body") as? SKSpriteNode {
-//                craft!.zRotation = CGFloat.pi / 2
+                craft!.zRotation = CGFloat.pi / 2
                 let impulse = LevelSettings.instance.initialImpulse
                 body.physicsBody!.applyImpulse(CGVector(dx: impulse, dy: 0.0))
                 firstPass = false

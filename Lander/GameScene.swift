@@ -23,9 +23,8 @@ class GameScene: SKScene {
     var graphs = [String : GKGraph]()
     
     private var lastUpdateTime : TimeInterval = 0
-    private var craft: SKNode?
-    private var nozzle: SKSpriteNode?
-    private var nozzleFlame: SKEmitterNode?
+    
+    private var craft: MoonLanderCraft?
     
     // HUD
     private var label1: SKLabelNode?
@@ -87,11 +86,27 @@ class GameScene: SKScene {
 //        gravity.falloff = 0
 //        world?.addChild(gravity)
         
-        initializeCraft()
+        guard let ground = self.childNode(withName: "//ground") as? SKSpriteNode else {
+            return
+        }
+        ground.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: ground.size.width, height: ground.size.height))
+        ground.physicsBody?.isDynamic = false
+        ground.physicsBody?.restitution = 0.25
+        ground.physicsBody?.friction = 0.8
+        ground.physicsBody?.categoryBitMask = shipCollidableMask
+        //        ground.physicsBody?.collisionBitMask = shipCollidableMask
+        
+        
+        craft = MoonLanderCraft(in: scene!)
         initializeCamera()
         initializeUI()
         lastCameraPos = camera?.position
         initializeBackground()
+        
+        let r = (MOON_RADIUS + 15) * km * METERS_TO_POINTS
+        craft!.root.position.y = r
+        //        ground.position.y = craft.position.y - 10
+        print("Set initial r to %08f", r)
         
         label1 = self.childNode(withName: "//landerPos") as? SKLabelNode
         label2 = self.childNode(withName: "//landerDV") as? SKLabelNode
@@ -191,94 +206,9 @@ class GameScene: SKScene {
         return sprite
     }
     
-    // Should probably create a well defined craft format and a loader class for it.
-    func initializeCraft() {
-        // Get the craft node and attack physics to it
-        // TODO: Add error handling to craft setup
-        self.craft = self.childNode(withName: "//lander")
-        guard let craft = self.craft else {
-            return
-        }
-        guard let body = craft.childNode(withName: "//body") as? SKSpriteNode else {
-            return
-        }
-        
-        self.nozzle = self.childNode(withName: "//nozzle") as? SKSpriteNode
-        guard let nozzle = self.nozzle else {
-            return
-        }
-        guard let leftLeg = craft.childNode(withName: "//leg_left") as? SKSpriteNode else {
-            return
-        }
-        guard let rightLeg = craft.childNode(withName: "//leg_right") as? SKSpriteNode else {
-            return
-        }
-        
-        craft.physicsBody = SKPhysicsBody(circleOfRadius: 1.0)
-        
-        
-//        setRectangularPhysicsBody(on: body, mass: 100.0, collisionMask: shipCollidableMask)
-        setBitmapPhysicsBody(on: body, mass: 140.0, collisionMask: shipCollidableMask)
-        setRectangularPhysicsBody(on: nozzle, mass: 1.79, collisionMask: shipCollidableMask)
-        setBitmapPhysicsBody(on: leftLeg, mass: 0.50, collisionMask: shipCollidableMask)
-        setBitmapPhysicsBody(on: rightLeg, mass: 0.50, collisionMask: shipCollidableMask)
-        
-        // This reduces the bias for the craft to rotate left but doesn't eliminate it
-        craft.physicsBody!.angularDamping = 1
-        body.physicsBody!.angularDamping = 1
-        leftLeg.physicsBody!.angularDamping = 1
-        rightLeg.physicsBody!.angularDamping = 1
-        nozzle.physicsBody!.angularDamping = 1
-        
-        craft.physicsBody!.linearDamping = 0
-        body.physicsBody!.linearDamping = 0
-        leftLeg.physicsBody!.linearDamping = 0
-        rightLeg.physicsBody!.linearDamping = 0
-        nozzle.physicsBody!.linearDamping = 0
-        
-        print("Body area: \(body.physicsBody?.area ?? 0)")
-        print("Body mass: \(body.physicsBody!.mass)")
-        print("Body density: \(body.physicsBody!.density)")
-
-        // Fixes the container node to the actual spacecraft sprites
-        let mainAnchor = body.convert(CGPoint(x: 0.5, y: 0.5), to: scene!)
-        let mainJoint = SKPhysicsJointFixed.joint(withBodyA: craft.physicsBody!, bodyB: body.physicsBody!, anchor: mainAnchor)
-        scene?.physicsWorld.add(mainJoint)
-        
-        let nozzleAnchor = nozzle.convert(CGPoint(x: 0.5, y: 1), to: scene!)
-        let nozzleJoint = SKPhysicsJointFixed.joint(withBodyA: body.physicsBody!, bodyB: nozzle.physicsBody!, anchor: nozzleAnchor)
-        scene?.physicsWorld.add(nozzleJoint)
-        
-        let leftAnchor = leftLeg.convert(CGPoint(x: 1, y: 1), to: scene!)
-        let leftJoint = SKPhysicsJointFixed.joint(withBodyA: body.physicsBody!, bodyB: leftLeg.physicsBody!, anchor: leftAnchor)
-        scene?.physicsWorld.add(leftJoint)
-        
-        let rightAnchor = rightLeg.convert(CGPoint(x: 0, y: 1), to: scene!)
-        let rightJoint = SKPhysicsJointFixed.joint(withBodyA: body.physicsBody!, bodyB: rightLeg.physicsBody!, anchor: rightAnchor)
-        scene?.physicsWorld.add(rightJoint)
-        
-        guard let ground = self.childNode(withName: "//ground") as? SKSpriteNode else {
-            return
-        }
-        ground.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: ground.size.width, height: ground.size.height))
-        ground.physicsBody?.isDynamic = false
-        ground.physicsBody?.restitution = 0.25
-        ground.physicsBody?.friction = 0.8
-        ground.physicsBody?.categoryBitMask = shipCollidableMask
-//        ground.physicsBody?.collisionBitMask = shipCollidableMask
-        
-        
-        let r = (MOON_RADIUS + 15) * km * METERS_TO_POINTS
-        craft.position.y = r
-//        ground.position.y = craft.position.y - 10
-        print("Set initial r to %08f", r)
-        
-        print("Initialized craft properly.")
-    }
-    
     // Sets the camera to always stay near the spacecraft and never rotate.
     func initializeCamera() {
-        if let camera = self.scene?.camera, let craft = self.craft {
+        if let camera = self.scene?.camera, let craft = self.craft?.root {
             let rangeConstraint = SKConstraint.distance(SKRange(upperLimit: 100.0), to: craft)
             let rotationConstraint = SKConstraint.zRotation(SKRange(constantValue: 0.0))
             camera.constraints = [rangeConstraint, rotationConstraint]
@@ -304,15 +234,7 @@ class GameScene: SKScene {
     
     func touchDown(atPoint pos : CGPoint) {
         lastTouch = pos
-        if let nozzle = self.nozzle {
-            if nozzleFlame == nil {
-                if let nozzleFlame = newFlameEmitter() {
-                    nozzle.addChild(nozzleFlame)
-                    nozzleFlame.zPosition = -1
-                    nozzleFlame.position.y = -80.0
-                }
-            }
-        }
+        craft?.setEngineState(to: true)
     }
     
     func touchMoved(toPoint pos : CGPoint) {
@@ -321,7 +243,7 @@ class GameScene: SKScene {
         }
         if let last = lastTouch, let craft = self.craft {
             let dy = pos.y - last.y
-            craft.zRotation += (dy / rotationScalar)
+            craft.root.zRotation += (dy / rotationScalar)
             
         }
         lastTouch = pos
@@ -329,9 +251,7 @@ class GameScene: SKScene {
     
     func touchUp(atPoint pos : CGPoint) {
         lastTouch = nil
-        if let nozzle = self.childNode(withName: "//nozzle") as? SKSpriteNode {
-            nozzle.removeAllChildren()
-        }
+        craft?.setEngineState(to: false)
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -372,8 +292,8 @@ class GameScene: SKScene {
             scene!.physicsWorld.gravity.dx = gx
             
             // velocity
-            let dy = craft.physicsBody!.velocity.dy
-            let dx = craft.physicsBody!.velocity.dx
+            let dy = craft.physicsBody.velocity.dy
+            let dx = craft.physicsBody.velocity.dx
             let v = ((dx * dx) + (dy * dy)).squareRoot()
             
             label1?.text = String(format: "alt: %6.3f km, r: %08.0f, abs pos: (%+08.0f, %+08.0f)", alt, r, craftAbsPos.x / mToP, craftAbsPos.y / mToP)
@@ -425,11 +345,11 @@ class GameScene: SKScene {
             let angle = craft!.zRotation + (CGFloat.pi / 2)
             let dx = impulse * cos(angle)
             let dy = impulse * sin(angle)
-            nozzle!.physicsBody!.applyForce(CGVector(dx: dx, dy: dy))
+            craft?.engine.physicsBody!.applyForce(CGVector(dx: dx, dy: dy))
         }
         
         if firstPass {
-            if let body = craft!.childNode(withName: "//body") as? SKSpriteNode {
+            if let body = craft?.body {
                 craft!.zRotation = CGFloat.pi / 2
                 let impulse = LevelSettings.instance.initialImpulse
                 body.physicsBody!.applyImpulse(CGVector(dx: impulse, dy: 0.0))

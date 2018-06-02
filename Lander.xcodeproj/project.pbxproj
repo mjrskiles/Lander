@@ -17,6 +17,11 @@
 		4C0AA7C62092EB2C000EEEB9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4C0AA7C42092EB2C000EEEB9 /* LaunchScreen.storyboard */; };
 		4C0AA7D12092EB2C000EEEB9 /* LanderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C0AA7D02092EB2C000EEEB9 /* LanderTests.swift */; };
 		4C0AA7DC2092EB2C000EEEB9 /* LanderUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C0AA7DB2092EB2C000EEEB9 /* LanderUITests.swift */; };
+		4C0B802420C1E86A0079044A /* World.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C0B802320C1E86A0079044A /* World.swift */; };
+		4C0B802620C1F12C0079044A /* Moon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C0B802520C1F12C0079044A /* Moon.swift */; };
+		4C0B802820C1F70B0079044A /* Craft.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C0B802720C1F70B0079044A /* Craft.swift */; };
+		4C0B802A20C1F9910079044A /* MoonLanderCraft.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C0B802920C1F9910079044A /* MoonLanderCraft.swift */; };
+		4C0B802C20C2036C0079044A /* PhysicsEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C0B802B20C2036C0079044A /* PhysicsEntity.swift */; };
 		4C21E5D120AF9C6000EE99C2 /* Background.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4C21E5D020AF9C6000EE99C2 /* Background.xcassets */; };
 		4C21E5D320AF9D2B00EE99C2 /* BackgroundTiles.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4C21E5D220AF9D2B00EE99C2 /* BackgroundTiles.sks */; };
 		4C7FEEFA20B29D9800E2A9F1 /* ScrollManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7FEEF920B29D9800E2A9F1 /* ScrollManager.swift */; };
@@ -65,6 +70,11 @@
 		4C0AA7D72092EB2C000EEEB9 /* LanderUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LanderUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C0AA7DB2092EB2C000EEEB9 /* LanderUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanderUITests.swift; sourceTree = "<group>"; };
 		4C0AA7DD2092EB2C000EEEB9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4C0B802320C1E86A0079044A /* World.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = World.swift; sourceTree = "<group>"; };
+		4C0B802520C1F12C0079044A /* Moon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Moon.swift; sourceTree = "<group>"; };
+		4C0B802720C1F70B0079044A /* Craft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Craft.swift; sourceTree = "<group>"; };
+		4C0B802920C1F9910079044A /* MoonLanderCraft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonLanderCraft.swift; sourceTree = "<group>"; };
+		4C0B802B20C2036C0079044A /* PhysicsEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhysicsEntity.swift; sourceTree = "<group>"; };
 		4C21E5D020AF9C6000EE99C2 /* Background.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Background.xcassets; sourceTree = "<group>"; };
 		4C21E5D220AF9D2B00EE99C2 /* BackgroundTiles.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = BackgroundTiles.sks; sourceTree = "<group>"; };
 		4C7FEEF920B29D9800E2A9F1 /* ScrollManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollManager.swift; sourceTree = "<group>"; };
@@ -142,6 +152,11 @@
 				4C7FEEF920B29D9800E2A9F1 /* ScrollManager.swift */,
 				4CAF5A1220BFCE4100267E09 /* LevelSettings.swift */,
 				4CAF5A1620BFD04400267E09 /* LaunchViewController.swift */,
+				4C0B802320C1E86A0079044A /* World.swift */,
+				4C0B802520C1F12C0079044A /* Moon.swift */,
+				4C0B802720C1F70B0079044A /* Craft.swift */,
+				4C0B802920C1F9910079044A /* MoonLanderCraft.swift */,
+				4C0B802B20C2036C0079044A /* PhysicsEntity.swift */,
 			);
 			path = Lander;
 			sourceTree = "<group>";
@@ -334,14 +349,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4C0B802620C1F12C0079044A /* Moon.swift in Sources */,
+				4C0B802420C1E86A0079044A /* World.swift in Sources */,
 				4C0AA7BC2092EB2A000EEEB9 /* GameScene.swift in Sources */,
 				4CDAB4DC20AFE3CC00965BBC /* InputEvent.swift in Sources */,
 				4C7FEEFA20B29D9800E2A9F1 /* ScrollManager.swift in Sources */,
 				4C0AA7BE2092EB2A000EEEB9 /* GameViewController.swift in Sources */,
+				4C0B802820C1F70B0079044A /* Craft.swift in Sources */,
 				4CAF5A1320BFCE4100267E09 /* LevelSettings.swift in Sources */,
 				4CDAB4DA20AFD7F000965BBC /* SteeringAdapter.swift in Sources */,
 				4C0AA7B62092EB2A000EEEB9 /* AppDelegate.swift in Sources */,
 				4CAF5A1720BFD04400267E09 /* LaunchViewController.swift in Sources */,
+				4C0B802C20C2036C0079044A /* PhysicsEntity.swift in Sources */,
+				4C0B802A20C1F9910079044A /* MoonLanderCraft.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

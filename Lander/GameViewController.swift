@@ -75,4 +75,8 @@ class GameViewController: UIViewController {
     @IBAction func inputTypeWasSelected(_ sender: UISwitch) {
         gameScene?.motionEnabled = sender.isOn
     }
+    
+    @IBAction func zeroGyro(_ sender: UIButton) {
+        gameScene?.zeroGyro()
+    }
 }

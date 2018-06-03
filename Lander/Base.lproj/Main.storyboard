@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="kdU-b3-yox">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="kdU-b3-yox">
     <device id="retina4_7" orientation="landscape">
         <adaptation id="fullscreen"/>
     </device>
@@ -92,9 +92,18 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KTU-Pg-V1F">
+                                <rect key="frame" x="568" y="59" width="69" height="30"/>
+                                <state key="normal" title="Zero Gyro"/>
+                                <connections>
+                                    <action selector="zeroGyro:" destination="BV1-FR-VrT" eventType="touchUpInside" id="UhF-8X-NqM"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="Hlc-75-w3F" firstAttribute="centerX" secondItem="KTU-Pg-V1F" secondAttribute="centerX" id="7qf-n6-DIK"/>
+                            <constraint firstItem="KTU-Pg-V1F" firstAttribute="top" secondItem="Hlc-75-w3F" secondAttribute="bottom" constant="8" id="DDU-hr-TDK"/>
                             <constraint firstItem="Xk7-cg-qTb" firstAttribute="leading" secondItem="4qk-I5-YsI" secondAttribute="leading" constant="34" id="Kx3-ia-iXP"/>
                             <constraint firstItem="4qk-I5-YsI" firstAttribute="trailing" secondItem="Hlc-75-w3F" secondAttribute="trailing" constant="40" id="ZiF-rR-lRY"/>
                             <constraint firstItem="Hlc-75-w3F" firstAttribute="centerY" secondItem="yAn-ef-dY5" secondAttribute="centerY" id="kbV-sM-q2c"/>

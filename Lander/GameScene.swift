@@ -50,7 +50,13 @@ class GameScene: SKScene {
     
     // Input related
     //   Motion
-    var motionEnabled: Bool = true
+    var motionEnabled: Bool = true {
+        didSet {
+            if motionEnabled {
+                zeroGyro()
+            }
+        }
+    }
     var motionAdapter = MotionSteeringAdapter()
     let motionManager = CMMotionManager()
     
@@ -111,6 +117,16 @@ class GameScene: SKScene {
         label1 = self.childNode(withName: "//landerPos") as? SKLabelNode
         label2 = self.childNode(withName: "//landerDV") as? SKLabelNode
         label3 = self.childNode(withName: "//landerAV") as? SKLabelNode
+    }
+    
+    // Called by the UI to zero the gyro
+    func zeroGyro() {
+//        if motionManager.isGyroAvailable {
+//            if let data = motionManager.gyroData {
+//                Settings.instance.gyroOffset = data.rotationRate.z * -1
+//                print(String(format: "Zeroed gyro to %+06.4f", Settings.instance.gyroOffset))
+//            }
+//        }
     }
     
     func initializeBackground() {
@@ -214,23 +230,6 @@ class GameScene: SKScene {
             camera.constraints = [rangeConstraint, rotationConstraint]
         }
     }
-    
-    func setRectangularPhysicsBody(on sprite: SKSpriteNode, mass: CGFloat, collisionMask: UInt32) {
-        sprite.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: sprite.size.width, height: sprite.size.height))
-        sprite.physicsBody?.mass = mass
-        sprite.physicsBody?.collisionBitMask = collisionMask
-    }
-    
-    func setBitmapPhysicsBody(on sprite: SKSpriteNode, mass: CGFloat, collisionMask: UInt32) {
-        sprite.physicsBody = SKPhysicsBody(texture: sprite.texture!, size: sprite.size)
-        sprite.physicsBody?.mass = mass
-        sprite.physicsBody?.collisionBitMask = collisionMask
-    }
-    
-    func newFlameEmitter() -> SKEmitterNode? {
-        return SKEmitterNode(fileNamed: "RocketFlame.sks")
-    }
-    
     
     func touchDown(atPoint pos : CGPoint) {
         lastTouch = pos
@@ -351,7 +350,7 @@ class GameScene: SKScene {
         if firstPass {
             if let body = craft?.body {
                 craft!.zRotation = CGFloat.pi / 2
-                let impulse = LevelSettings.instance.initialImpulse
+                let impulse = Settings.instance.initialImpulse
                 body.physicsBody!.applyImpulse(CGVector(dx: impulse, dy: 0.0))
                 firstPass = false
                 print(String(format: "Applied first pass impulse, used value %8.0f", impulse))

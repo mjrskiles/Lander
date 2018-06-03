@@ -20,6 +20,14 @@ struct MotionInputEvent : InputEvent {
     }
 }
 
+struct GyroInputEvent : InputEvent {
+    let input: CMGyroData
+    
+    init(from gyroData: CMGyroData) {
+        self.input = gyroData
+    }
+}
+
 struct TouchInputEvent : InputEvent {
     let input: CGPoint
     

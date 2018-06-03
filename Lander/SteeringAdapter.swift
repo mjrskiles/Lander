@@ -20,18 +20,49 @@ protocol SteeringAdapter {
     func handle(_ event: InputEvent) -> Double
 }
 
+class GyroSteeringAdapter : SteeringAdapter {
+    var sensitivity: Double = 0.1
+    var filteringFactor = 0.1
+    var previousValue = 0.0
+    var deadZone = 0.01
+    
+    private func calcAngleDelta(from rate: Double) -> Double {
+        
+        return abs(rate) > deadZone ? rate * sensitivity : 0.0
+    }
+    
+    private func highPassFilter(_ value: Double) -> Double {
+        let lowPassValue = value * filteringFactor + previousValue * (1.0 - filteringFactor)
+        previousValue = lowPassValue
+        return value - lowPassValue
+    }
+    
+    func handle(_ event: InputEvent) -> Double {
+        guard let gyroEvent = event as? GyroInputEvent else {
+            print("Failed to cast input as MotionInputEvent.")
+            return 0.0
+        }
+        
+//        let adjustedInput = highPassFilter(gyroEvent.input.rotationRate.z + Settings.instance.gyroOffset)
+        let adjustedInput = gyroEvent.input.rotationRate.z + Settings.instance.gyroOffset
+
+        
+        return calcAngleDelta(from: adjustedInput)
+    }
+}
+
 class MotionSteeringAdapter : SteeringAdapter {
 //    var deadZoneLimit: Double = Double.pi / 128 //5.625 degrees
     var deadZoneLimit: Double = 0.0
-    var sensitivity: Double = 0.25
+    var sensitivity: Double = 0.1
     
-    private func calcAngleDelta(from yaw: Double) -> Double {
-        if abs(yaw) < deadZoneLimit {
+    private func calcAngleDelta(from rate: Double) -> Double {
+        if abs(rate) < deadZoneLimit {
 //            print("Angled was within the deadzone.")
             return 0.0
         }
         
-        let compensatedYaw = yaw - (yaw > 0 ? deadZoneLimit : -deadZoneLimit)
+        let compensatedYaw = rate - (rate > 0 ? deadZoneLimit : -deadZoneLimit)
         return compensatedYaw * sensitivity
     }
     
@@ -41,8 +72,10 @@ class MotionSteeringAdapter : SteeringAdapter {
             return 0.0
         }
         
-        return calcAngleDelta(from: motionEvent.input.attitude.yaw)
+        let adjustedInput = motionEvent.input.rotationRate.z - Settings.instance.gyroOffset
+        
+        return calcAngleDelta(from: adjustedInput)
     }
-    
-    
 }
+
+

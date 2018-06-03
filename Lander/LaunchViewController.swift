@@ -13,7 +13,7 @@ class LaunchViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        impulseTextField.text = LevelSettings.instance.initialImpulse.description
+        impulseTextField.text = Settings.instance.initialImpulse.description
         // Do any additional setup after loading the view.
     }
 
@@ -28,7 +28,7 @@ class LaunchViewController: UIViewController {
         }
         
         if let impulse = Double(text) {
-            LevelSettings.instance.initialImpulse = impulse
+            Settings.instance.initialImpulse = impulse
         }
         print("Edited impulse")
     }
@@ -39,7 +39,7 @@ class LaunchViewController: UIViewController {
         }
         
         if let impulse = Double(text) {
-            LevelSettings.instance.initialImpulse = impulse
+            Settings.instance.initialImpulse = impulse
         }
         print("Edited impulse")
     }

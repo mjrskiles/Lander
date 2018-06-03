@@ -15,7 +15,7 @@ class GameScene: SKScene {
     // Constants
     let METERS_TO_POINTS: CGFloat = 1.50
     let MOTION_UPDATE_RATE = 1.0 / 60.0
-    let MOON_RADIUS: CGFloat = 1737.0 // km
+    let MOON_RADIUS: CGFloat = 500.0 // km
     let GRAVITY: CGFloat = -1.62 // m/s^2
     let km: CGFloat = 1000.0
     
@@ -103,10 +103,10 @@ class GameScene: SKScene {
         lastCameraPos = camera?.position
         initializeBackground()
         
-        let r = (MOON_RADIUS + 15) * km * METERS_TO_POINTS
+        let r = (MOON_RADIUS) * km * METERS_TO_POINTS
         craft!.root.position.y = r
         //        ground.position.y = craft.position.y - 10
-        print("Set initial r to %08f", r)
+        print("Set initial r to %08.0f", r)
         
         label1 = self.childNode(withName: "//landerPos") as? SKLabelNode
         label2 = self.childNode(withName: "//landerDV") as? SKLabelNode

@@ -13,7 +13,7 @@ class LevelSettings {
     // The Singleton instance
     static let instance = LevelSettings()
     
-    var initialImpulse: Double = 3_605_400.0
+    var initialImpulse: Double = 1_920_000.0
     
     private init() {}
 }

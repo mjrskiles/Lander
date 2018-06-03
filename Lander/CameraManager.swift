@@ -15,13 +15,8 @@ class CameraManager: GameDelegate {
     
     private var lastCameraPos: CGPoint
     
-    var dx: CGFloat {
-        return camera.position.x - lastCameraPos.x
-    }
-    
-    var dy: CGFloat {
-        return camera.position.y - lastCameraPos.y
-    }
+    var dx: CGFloat = 0.0
+    var dy: CGFloat = 0.0
     
     
     init(for camera: SKCameraNode, in scene: SKScene, following target: SKNode) {
@@ -42,6 +37,8 @@ class CameraManager: GameDelegate {
         
         camera.zRotation = theta - (CGFloat.pi / 2)
         
+        dx = camera.position.x - lastCameraPos.x
+        dy = camera.position.y - lastCameraPos.y
         lastCameraPos = camera.position
     }
 }

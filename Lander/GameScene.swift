@@ -202,14 +202,15 @@ class GameScene: SKScene {
             var a: [SKSpriteNode] = []
             for col in 0..<3 {
                 let bg = spriteWithSceneHeight(from: bgTex)
+                bg.position.x = bg.size.width * CGFloat(col - 1)  // This works specifically for arrays of 3
+                bg.position.y = bg.size.height * CGFloat(row - 1)
                 bg.zRotation = (CGFloat.pi / 2) * CGFloat(row + col) // Mix up the rotations to avoid appearance of pattern
-                bg.position.x = bg.size.width * CGFloat(col - 1) // This works specifically for arrays of 3
-                bg.position.y = bg.size.height * CGFloat(row - 1 * (col == 1 ? 1 : -1))
                 a.append(bg)
                 parent.addChild(bg)
             }
             matrix.append(a)
         }
+    
     }
     
     func spriteWithSceneHeight(from texture: SKTexture) -> SKSpriteNode {

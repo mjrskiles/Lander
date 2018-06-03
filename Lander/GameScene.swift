@@ -225,7 +225,7 @@ class GameScene: SKScene {
     // Sets the camera to always stay near the spacecraft and never rotate.
     func initializeCamera() {
         if let camera = self.scene?.camera, let craft = self.craft?.root {
-            let rangeConstraint = SKConstraint.distance(SKRange(upperLimit: 100.0), to: craft)
+            let rangeConstraint = SKConstraint.distance(SKRange(upperLimit: 40.0), to: craft)
             let rotationConstraint = SKConstraint.zRotation(SKRange(constantValue: 0.0))
             camera.constraints = [rangeConstraint, rotationConstraint]
         }

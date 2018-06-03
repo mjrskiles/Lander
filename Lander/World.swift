@@ -21,7 +21,7 @@ class World {
     
     init(in scene: SKScene) {
         self.scene = scene
-        self.radius = 0
-        self.gravity = 0
+        self.radius = 1
+        self.gravity = -1
     }
 }

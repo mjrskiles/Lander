@@ -45,6 +45,7 @@ class GameScene: SKScene {
     var altimeterHeight: CGFloat = 0.0
     var throttleArrow: SKSpriteNode?
     var throttleHeight: CGFloat = 0.0
+    var throttleLabel: SKLabelNode?
     
     // Background Sprites & scrolling
     private let MID_SCROLL_RATIO: CGFloat = 0.0015
@@ -65,7 +66,7 @@ class GameScene: SKScene {
     var touchInputOverlay: TouchInputOverlayNode?
     
     //   Motion
-    var motionEnabled: Bool = true {
+    var motionEnabled: Bool = false {
         didSet {
             touchInputOverlay?.switchInputMethod(isMotion: motionEnabled)
         }
@@ -106,6 +107,8 @@ class GameScene: SKScene {
         if let scene = self.scene {
             // TODO: Add error handling in case any of the initializers fail
             velocityLabel = self.childNode(withName: "//landerDV") as? SKLabelNode
+            velocityLabel?.position.x = -65
+            velocityLabel?.position.y = (scene.size.height / 2) - 25
             debugLabel = self.childNode(withName: "//landerAV") as? SKLabelNode
             
             craft = MoonLanderCraft(in: scene)
@@ -213,12 +216,30 @@ class GameScene: SKScene {
         altimeterBar.position.x = scene!.size.height / 2
         altimeterBar.zPosition = navArc.zPosition
         
+        // Set up the throttle meter
+        let throttleBar = SKSpriteNode(imageNamed: "alt_bar_32x64")
+        throttleArrow = SKSpriteNode(imageNamed: "alt_arrow_32x32")
         
+        // The label
+        throttleLabel = SKLabelNode(fontNamed: "Menlo-Regular")
+        throttleLabel!.fontSize = 18.0
+        throttleLabel!.position.x = throttleArrow!.position.x - (throttleArrow!.size.width * 1.5)
+        throttleLabel!.position.y -= (throttleArrow!.size.height / 4)
+        throttleArrow!.addChild(throttleLabel!)
+        
+        throttleBar.size.height = altimeterHeight // same as altimeter
+        throttleBar.addChild(throttleArrow!)
+        throttleBar.position.x = (scene!.size.height / 2) * -1
+        throttleBar.zPosition = navArc.zPosition
+        
+        
+        // Add the UI nodes to the scene
         camera?.addChild(navArc)
         camera?.addChild(attitudeCrosshair!)
         camera?.addChild(progradeIcon!)
         camera?.addChild(retrogradeIcon!)
         camera?.addChild(altimeterBar)
+        camera?.addChild(throttleBar)
     }
     
     func initializeScrollingPlane(from textureImage: String, attachTo parent: SKNode, _ matrix: inout [[SKSpriteNode]]) {
@@ -257,7 +278,19 @@ class GameScene: SKScene {
     }
     
     func setEngineThrottle(delta: CGFloat) {
-        // TODO: implement throttle
+        if let craft = self.craft {
+            var throttle = craft.throttle
+            throttle += delta
+            
+            if throttle > 1 { throttle = 1 }
+            else if throttle < 0 { throttle = 0 }
+            
+            craft.throttle = throttle
+            
+            if let flame = craft.engineEmitter {
+                flame.particleBirthRate = craft.emitterMaxBirthRate * throttle
+            }
+        }
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -281,9 +314,10 @@ class GameScene: SKScene {
     override func update(_ currentTime: TimeInterval) {
         
         if let craft = self.craft {
+            let impulse = craft.maxThrust * craft.throttle
+            
             // Apply engine thrust
             if craft.engineState {
-                let impulse: CGFloat = 45000
                 let angle = craft.zRotation + (CGFloat.pi / 2)
                 let dx = impulse * cos(angle)
                 let dy = impulse * sin(angle)
@@ -308,16 +342,18 @@ class GameScene: SKScene {
             let r = ((absX * absX) + (absY * absY)).squareRoot()
             let alt = (r - (MOON_RADIUS * km)) / km / 100
             
-            //   Update the altimeter
+            //  Update the altimeter
             if let arrow = altimeterArrow {
                 var ratio = alt / (Scenarios.orbitScenario.altitude / 100)
-                if ratio > 1 {
-                    ratio = 1
-                }
-                else if ratio < 0 {
-                    ratio = 0
-                }
+                if ratio > 1 { ratio = 1 }
+                else if ratio < 0 { ratio = 0 }
                 arrow.position.y = (ratio * altimeterHeight) - altimeterHeight / 2
+            }
+            
+            //  Update the throttle arrow
+            if let throttle = throttleArrow {
+                var ratio = craft.throttle
+                throttle.position.y = (ratio * altimeterHeight) - altimeterHeight / 2
             }
             
             /*
@@ -332,9 +368,10 @@ class GameScene: SKScene {
             scene!.physicsWorld.gravity.dy = gy
             scene!.physicsWorld.gravity.dx = gx
             
-            
+            // Update the text elements of the HUD
             altLabel?.text = alt > 1 ? String(format: "%6.3fkm", alt) : String(format: "%5.1fm", alt * 1000)
-            velocityLabel?.text = String(format: "v: %08.2f m/s", v / 100)
+            throttleLabel?.text = String(format: "%5.1f", craft.throttle * 100)
+            velocityLabel?.text = String(format: "%07.1f m/s", v / 100)
             if Settings.instance.debug {
                 debugLabel?.isHidden = false
                 debugLabel?.text = String(format: "orbital angle: %+05.3f, r: %08.3f", theta, (r / km) / 10)

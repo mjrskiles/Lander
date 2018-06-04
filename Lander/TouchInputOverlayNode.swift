@@ -126,7 +126,7 @@ class TouchInputOverlayNode: SKSpriteNode, TouchInputZoneDelegate {
     func touchInputZone(_ inputZone: TouchInputZone, isPressed: Bool) {
         if let gameScene = self.scene as? GameScene {
             
-            if inputZone === thrusterInputZone {
+            if !boosterToggleState && inputZone === thrusterInputZone {
                 gameScene.setEngineState(to: isPressed)
             }
             

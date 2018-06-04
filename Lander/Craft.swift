@@ -14,6 +14,7 @@ protocol Craft {
     var body: SKSpriteNode { get set }
     var engine: SKSpriteNode { get set }
     var engineEmitter: SKEmitterNode? { get set }
+    var emitterMaxBirthRate: CGFloat { get set }
     
     // Physics
     var maxThrust: CGFloat { get set }

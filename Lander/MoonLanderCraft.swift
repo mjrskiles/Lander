@@ -23,6 +23,8 @@ class MoonLanderCraft: Craft {
     
     var engineEmitter: SKEmitterNode?
     
+    var emitterMaxBirthRate: CGFloat = 80.0
+    
     let rootName: String = "lander"
     
     var collidableMask: PhysicsEntity.collisionMask = .shipCollidable

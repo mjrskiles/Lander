@@ -35,13 +35,13 @@ class GameScene: SKScene {
     private var terrainManager: TerrainManager!
     
     // HUD
-    private var label1: SKLabelNode?
-    private var label2: SKLabelNode?
-    private var label3: SKLabelNode?
+    private var altLabel: SKLabelNode?
+    private var velocityLabel: SKLabelNode?
+    private var debugLabel: SKLabelNode?
     private var attitudeCrosshair: SKNode?
     private var progradeIcon: SKNode?
     private var retrogradeIcon: SKNode?
-    var altimeterArrow: SKNode?
+    var altimeterArrow: SKSpriteNode?
     var altimeterHeight: CGFloat = 0.0
     
     // Background Sprites & scrolling
@@ -103,6 +103,9 @@ class GameScene: SKScene {
         
         if let scene = self.scene {
             // TODO: Add error handling in case any of the initializers fail
+            velocityLabel = self.childNode(withName: "//landerDV") as? SKLabelNode
+            debugLabel = self.childNode(withName: "//landerAV") as? SKLabelNode
+            
             craft = MoonLanderCraft(in: scene)
             moon = Moon(in: scene)
             cameraManager = CameraManager(for: camera!, in: scene, following: craft!.root)
@@ -117,10 +120,6 @@ class GameScene: SKScene {
             let r = (MOON_RADIUS + scenario.altitude) * km * METERS_TO_POINTS
             craft!.root.position.y = r
             print(String(format:"Set initial r to %08.0f", r))
-            
-            label1 = self.childNode(withName: "//landerPos") as? SKLabelNode
-            label2 = self.childNode(withName: "//landerDV") as? SKLabelNode
-            label3 = self.childNode(withName: "//landerAV") as? SKLabelNode
         }
     }
     
@@ -137,8 +136,6 @@ class GameScene: SKScene {
             bg2.zRotation = CGFloat.pi
             bg1.position.x = bg1.position.x - bg1.size.width
             bg3.position.x = bg3.position.x + bg3.size.width
-            print("Left tile position: \(bg1.position)")
-            print("Middle tile position: \(bg2.position)")
             camera.addChild(bg1)
             camera.addChild(bg2)
             camera.addChild(bg3)
@@ -197,14 +194,23 @@ class GameScene: SKScene {
         
         // Set up the altimeter
         let altimeterBar = SKSpriteNode(imageNamed: "alt_bar_32x64")
-//        let altimeterFoot = SKSpriteNode(imageNamed: "alt_bar_foot_32x32")
         altimeterArrow = SKSpriteNode(imageNamed: "alt_arrow_32x32")
+        altimeterArrow!.zRotation = CGFloat.pi
+        
+        //   The label
+        altLabel = SKLabelNode(fontNamed: "Menlo-Regular")
+        altLabel!.fontSize = 18.0
+        altLabel!.position.x = altimeterArrow!.position.x - (altimeterArrow!.size.width * 2)
+        altLabel!.position.y += (altimeterArrow!.size.height / 4)
+        altLabel!.zRotation = CGFloat.pi
+        altimeterArrow!.addChild(altLabel!)
+        
+        
         altimeterHeight = radius * 2
         altimeterBar.size.height = altimeterHeight
-//        altimeterFoot.position.y = (scene!.size.height / 2)
-//        altimeterBar.addChild(altimeterFoot)
         altimeterBar.addChild(altimeterArrow!)
-        altimeterBar.position.x = scene!.size.height / 2 * -1
+        altimeterBar.position.x = scene!.size.height / 2
+        altimeterBar.zPosition = navArc.zPosition
         
         
         camera?.addChild(navArc)
@@ -274,6 +280,7 @@ class GameScene: SKScene {
     override func update(_ currentTime: TimeInterval) {
         
         if let craft = self.craft {
+            // Apply engine thrust
             if craft.engineState {
                 let impulse: CGFloat = 45000
                 let angle = craft.zRotation + (CGFloat.pi / 2)
@@ -301,7 +308,7 @@ class GameScene: SKScene {
             let alt = (r - (MOON_RADIUS * km)) / km / 100
             
             //   Update the altimeter
-            if let arrow = altimeterArrow as? SKSpriteNode {
+            if let arrow = altimeterArrow {
                 var ratio = alt / (Scenarios.orbitScenario.altitude / 100)
                 if ratio > 1 {
                     ratio = 1
@@ -324,9 +331,16 @@ class GameScene: SKScene {
             scene!.physicsWorld.gravity.dy = gy
             scene!.physicsWorld.gravity.dx = gx
             
-            label1?.text = String(format: "alt: %8.3f km, r: %08.3f", alt, r / km)
-            label2?.text = String(format: "v: %08.2f m/s, dx: %+06.2f, dy: %+06.2f", v / 10, dx, dy)
-            label3?.text = String(format: "orbital angle: %+05.3f, gy %+05.3f, gx %+05.3f", theta, gy, gx)
+            
+            altLabel?.text = alt > 1 ? String(format: "%6.3fkm", alt) : String(format: "%5.1fm", alt * 1000)
+            velocityLabel?.text = String(format: "v: %08.2f m/s", v / 100)
+            if Settings.instance.debug {
+                debugLabel?.isHidden = false
+                debugLabel?.text = String(format: "orbital angle: %+05.3f, r: %08.3f", theta, (r / km) / 10)
+            }
+            else {
+                debugLabel?.isHidden = true
+            }
         }
         
         // Initialize _lastUpdateTime if it has not already been

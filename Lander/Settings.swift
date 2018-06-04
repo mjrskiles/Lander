@@ -13,7 +13,7 @@ class Settings {
     // The Singleton instance
     static let instance = Settings()
     
-    var debug = true
+    var debug = false
     
     var initialImpulse: Double = 1_920_000.0
     var gyroOffset: Double = 0.0

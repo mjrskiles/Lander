@@ -17,6 +17,10 @@ class MoonLanderCraft: Craft {
     
     var engineState: Bool = false
     
+    var maxThrust: CGFloat = 90_000 // N
+    
+    var throttle: CGFloat = 0.5 // Start at 50% thrust
+    
     var engineEmitter: SKEmitterNode?
     
     let rootName: String = "lander"

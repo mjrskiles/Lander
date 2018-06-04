@@ -16,6 +16,8 @@ protocol Craft {
     var engineEmitter: SKEmitterNode? { get set }
     
     // Physics
+    var maxThrust: CGFloat { get set }
+    var throttle: CGFloat { get set }
     var collidableMask: PhysicsEntity.collisionMask { get set }
     
     var rootName: String { get }

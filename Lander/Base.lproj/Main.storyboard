@@ -80,27 +80,27 @@
                                     <action selector="returnToHomeScreen:" destination="BV1-FR-VrT" eventType="touchUpInside" id="3sG-w1-XsB"/>
                                 </connections>
                             </button>
-                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Hlc-75-w3F">
-                                <rect key="frame" x="578" y="20" width="51" height="31"/>
-                                <connections>
-                                    <action selector="inputTypeWasSelected:" destination="BV1-FR-VrT" eventType="valueChanged" id="Ubf-69-NTD"/>
-                                </connections>
-                            </switch>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Motion Control" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yAn-ef-dY5">
-                                <rect key="frame" x="444" y="25" width="114" height="21"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Motion" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yAn-ef-dY5">
+                                <rect key="frame" x="438" y="5" width="53" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Hlc-75-w3F">
+                                <rect key="frame" x="440" y="31" width="51" height="31"/>
+                                <connections>
+                                    <action selector="inputTypeWasSelected:" destination="BV1-FR-VrT" eventType="valueChanged" id="Ubf-69-NTD"/>
+                                </connections>
+                            </switch>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="4qk-I5-YsI" firstAttribute="trailing" secondItem="yAn-ef-dY5" secondAttribute="trailing" constant="176" id="KR6-3p-CgA"/>
                             <constraint firstItem="Xk7-cg-qTb" firstAttribute="leading" secondItem="4qk-I5-YsI" secondAttribute="leading" constant="34" id="Kx3-ia-iXP"/>
-                            <constraint firstItem="4qk-I5-YsI" firstAttribute="trailing" secondItem="Hlc-75-w3F" secondAttribute="trailing" constant="40" id="ZiF-rR-lRY"/>
-                            <constraint firstItem="Hlc-75-w3F" firstAttribute="centerY" secondItem="yAn-ef-dY5" secondAttribute="centerY" id="kbV-sM-q2c"/>
-                            <constraint firstItem="Hlc-75-w3F" firstAttribute="leading" secondItem="yAn-ef-dY5" secondAttribute="trailing" constant="20" id="loA-rC-qSt"/>
-                            <constraint firstItem="Hlc-75-w3F" firstAttribute="top" secondItem="4qk-I5-YsI" secondAttribute="top" constant="20" id="rcP-ZR-l1Z"/>
+                            <constraint firstItem="Hlc-75-w3F" firstAttribute="centerX" secondItem="yAn-ef-dY5" secondAttribute="centerX" id="YHx-yb-O1C"/>
+                            <constraint firstItem="Hlc-75-w3F" firstAttribute="top" secondItem="yAn-ef-dY5" secondAttribute="bottom" constant="5" id="tzY-EV-x7c"/>
                             <constraint firstItem="Xk7-cg-qTb" firstAttribute="top" secondItem="4qk-I5-YsI" secondAttribute="top" constant="20" id="wVh-8R-qfv"/>
+                            <constraint firstItem="yAn-ef-dY5" firstAttribute="top" secondItem="4qk-I5-YsI" secondAttribute="top" constant="5" id="zso-Gu-2ga"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="4qk-I5-YsI"/>
                     </view>

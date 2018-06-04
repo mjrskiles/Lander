@@ -41,12 +41,16 @@ class GameScene: SKScene {
     private var attitudeCrosshair: SKNode?
     private var progradeIcon: SKNode?
     private var retrogradeIcon: SKNode?
+    var altimeterArrow: SKNode?
+    var altimeterHeight: CGFloat = 0.0
     
     // Background Sprites & scrolling
     private let MID_SCROLL_RATIO: CGFloat = 0.0015
     private let CLOSE_SCROLL_RATIO: CGFloat = 0.003
+    private var midBackgroundContainerNode: SKNode?
     private var midBackgroundSprites: [[SKSpriteNode]] = []
     private var midScrollManager: ScrollManager?
+    private var closeBackgroundContainerNode: SKNode?
     private var closeBackgroundSprites: [[SKSpriteNode]] = []
     private var closeScrollManager: ScrollManager?
     
@@ -139,10 +143,16 @@ class GameScene: SKScene {
             camera.addChild(bg2)
             camera.addChild(bg3)
             
-            initializeScrollingPlane(from: "stars_z-1", attachTo: camera, &midBackgroundSprites)
+            midBackgroundContainerNode = SKNode()
+            closeBackgroundContainerNode = SKNode()
+            
+            initializeScrollingPlane(from: "stars_z-1", attachTo: midBackgroundContainerNode!, &midBackgroundSprites)
             midScrollManager = ScrollManager(in: scene!.size, scrollRatio: MID_SCROLL_RATIO)
-            initializeScrollingPlane(from: "stars_z0", attachTo: camera, &closeBackgroundSprites)
+            initializeScrollingPlane(from: "stars_z0", attachTo: closeBackgroundContainerNode!, &closeBackgroundSprites)
             closeScrollManager = ScrollManager(in: scene!.size, scrollRatio: CLOSE_SCROLL_RATIO)
+            
+            camera.addChild(midBackgroundContainerNode!)
+            camera.addChild(closeBackgroundContainerNode!)
             
         }
     }
@@ -185,11 +195,23 @@ class GameScene: SKScene {
         retrogradeSprite.position = arcPathPos
         retrogradeIcon!.zPosition = navArc.zPosition + 1
         
+        // Set up the altimeter
+        let altimeterBar = SKSpriteNode(imageNamed: "alt_bar_32x64")
+//        let altimeterFoot = SKSpriteNode(imageNamed: "alt_bar_foot_32x32")
+        altimeterArrow = SKSpriteNode(imageNamed: "alt_arrow_32x32")
+        altimeterHeight = radius * 2
+        altimeterBar.size.height = altimeterHeight
+//        altimeterFoot.position.y = (scene!.size.height / 2)
+//        altimeterBar.addChild(altimeterFoot)
+        altimeterBar.addChild(altimeterArrow!)
+        altimeterBar.position.x = scene!.size.height / 2 * -1
+        
         
         camera?.addChild(navArc)
         camera?.addChild(attitudeCrosshair!)
         camera?.addChild(progradeIcon!)
         camera?.addChild(retrogradeIcon!)
+        camera?.addChild(altimeterBar)
     }
     
     func initializeScrollingPlane(from textureImage: String, attachTo parent: SKNode, _ matrix: inout [[SKSpriteNode]]) {
@@ -270,9 +292,6 @@ class GameScene: SKScene {
             progradeIcon?.zRotation = atan2(dy, dx) - (CGFloat.pi / 2) - cameraManager.camera.zRotation
             retrogradeIcon?.zRotation = atan2(dy, dx) + (CGFloat.pi / 2) - cameraManager.camera.zRotation
             
-            /*
-                The rest of this let block is dedicated to updating text overlays
-            */
             // position
             let mToP = CGFloat(METERS_TO_POINTS)
             let craftAbsPos = craft.position
@@ -280,6 +299,22 @@ class GameScene: SKScene {
             let absY = craftAbsPos.y / mToP
             let r = ((absX * absX) + (absY * absY)).squareRoot()
             let alt = (r - (MOON_RADIUS * km)) / km / 100
+            
+            //   Update the altimeter
+            if let arrow = altimeterArrow as? SKSpriteNode {
+                var ratio = alt / (Scenarios.orbitScenario.altitude / 100)
+                if ratio > 1 {
+                    ratio = 1
+                }
+                else if ratio < 0 {
+                    ratio = 0
+                }
+                arrow.position.y = (ratio * altimeterHeight) - altimeterHeight / 2
+            }
+            
+            /*
+                The rest of this let block is dedicated to updating text overlays
+            */
             
             // angle
             let theta = atan2(absY, absX)
@@ -312,6 +347,8 @@ class GameScene: SKScene {
         terrainManager.update(dt)
         
         // Handle scrolling
+        midBackgroundContainerNode?.zRotation = -cameraManager.camera.zRotation
+        closeBackgroundContainerNode?.zRotation = -cameraManager.camera.zRotation
         midScrollManager?.updatePositions(of: &midBackgroundSprites, cameraManager.dx, cameraManager.dy)
         closeScrollManager?.updatePositions(of: &closeBackgroundSprites, cameraManager.dx, cameraManager.dy)
         

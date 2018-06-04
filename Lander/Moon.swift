@@ -11,7 +11,7 @@ import SpriteKit
 class Moon: World {
     override init(in scene: SKScene) {
         super.init(in: scene)
-        self.radius = 1737
+        self.radius = 100 // The real moon radius is 1737km. SpriteKit doesn't like distances that large
         self.gravity = -1.62
     }
 }

@@ -24,6 +24,13 @@
 		4C0B802C20C2036C0079044A /* PhysicsEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C0B802B20C2036C0079044A /* PhysicsEntity.swift */; };
 		4C21E5D120AF9C6000EE99C2 /* Background.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4C21E5D020AF9C6000EE99C2 /* Background.xcassets */; };
 		4C21E5D320AF9D2B00EE99C2 /* BackgroundTiles.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4C21E5D220AF9D2B00EE99C2 /* BackgroundTiles.sks */; };
+		4C47BDD020C46C6E00940973 /* CameraManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C47BDCF20C46C6E00940973 /* CameraManager.swift */; };
+		4C47BDD220C46CD900940973 /* GameDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C47BDD120C46CD900940973 /* GameDelegate.swift */; };
+		4C47BDD420C47E1700940973 /* TerrainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C47BDD320C47E1700940973 /* TerrainManager.swift */; };
+		4C47BDD620C486BC00940973 /* Units.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C47BDD520C486BC00940973 /* Units.swift */; };
+		4C47BDD820C4996100940973 /* Scenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C47BDD720C4996100940973 /* Scenario.swift */; };
+		4C47BDDA20C4D29F00940973 /* TouchInputOverlayNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C47BDD920C4D29F00940973 /* TouchInputOverlayNode.swift */; };
+		4C47BDDC20C4D48700940973 /* TouchInputZone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C47BDDB20C4D48700940973 /* TouchInputZone.swift */; };
 		4C7FEEFA20B29D9800E2A9F1 /* ScrollManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7FEEF920B29D9800E2A9F1 /* ScrollManager.swift */; };
 		4C98A2BA20A4CC6F00CBB428 /* SpaceShip.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4C98A2B920A4CC6F00CBB428 /* SpaceShip.xcassets */; };
 		4C98A2BD20A4FBA300CBB428 /* RocketFlame.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4C98A2BB20A4FBA300CBB428 /* RocketFlame.sks */; };
@@ -77,6 +84,13 @@
 		4C0B802B20C2036C0079044A /* PhysicsEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhysicsEntity.swift; sourceTree = "<group>"; };
 		4C21E5D020AF9C6000EE99C2 /* Background.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Background.xcassets; sourceTree = "<group>"; };
 		4C21E5D220AF9D2B00EE99C2 /* BackgroundTiles.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = BackgroundTiles.sks; sourceTree = "<group>"; };
+		4C47BDCF20C46C6E00940973 /* CameraManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraManager.swift; sourceTree = "<group>"; };
+		4C47BDD120C46CD900940973 /* GameDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameDelegate.swift; sourceTree = "<group>"; };
+		4C47BDD320C47E1700940973 /* TerrainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerrainManager.swift; sourceTree = "<group>"; };
+		4C47BDD520C486BC00940973 /* Units.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Units.swift; sourceTree = "<group>"; };
+		4C47BDD720C4996100940973 /* Scenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scenario.swift; sourceTree = "<group>"; };
+		4C47BDD920C4D29F00940973 /* TouchInputOverlayNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TouchInputOverlayNode.swift; sourceTree = "<group>"; };
+		4C47BDDB20C4D48700940973 /* TouchInputZone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TouchInputZone.swift; sourceTree = "<group>"; };
 		4C7FEEF920B29D9800E2A9F1 /* ScrollManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollManager.swift; sourceTree = "<group>"; };
 		4C98A2B920A4CC6F00CBB428 /* SpaceShip.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = SpaceShip.xcassets; sourceTree = "<group>"; };
 		4C98A2BB20A4FBA300CBB428 /* RocketFlame.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = RocketFlame.sks; sourceTree = "<group>"; };
@@ -157,6 +171,13 @@
 				4C0B802720C1F70B0079044A /* Craft.swift */,
 				4C0B802920C1F9910079044A /* MoonLanderCraft.swift */,
 				4C0B802B20C2036C0079044A /* PhysicsEntity.swift */,
+				4C47BDCF20C46C6E00940973 /* CameraManager.swift */,
+				4C47BDD120C46CD900940973 /* GameDelegate.swift */,
+				4C47BDD320C47E1700940973 /* TerrainManager.swift */,
+				4C47BDD520C486BC00940973 /* Units.swift */,
+				4C47BDD720C4996100940973 /* Scenario.swift */,
+				4C47BDD920C4D29F00940973 /* TouchInputOverlayNode.swift */,
+				4C47BDDB20C4D48700940973 /* TouchInputZone.swift */,
 			);
 			path = Lander;
 			sourceTree = "<group>";
@@ -349,19 +370,26 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4C47BDD620C486BC00940973 /* Units.swift in Sources */,
 				4C0B802620C1F12C0079044A /* Moon.swift in Sources */,
 				4C0B802420C1E86A0079044A /* World.swift in Sources */,
 				4C0AA7BC2092EB2A000EEEB9 /* GameScene.swift in Sources */,
 				4CDAB4DC20AFE3CC00965BBC /* InputEvent.swift in Sources */,
 				4C7FEEFA20B29D9800E2A9F1 /* ScrollManager.swift in Sources */,
+				4C47BDDA20C4D29F00940973 /* TouchInputOverlayNode.swift in Sources */,
 				4C0AA7BE2092EB2A000EEEB9 /* GameViewController.swift in Sources */,
 				4C0B802820C1F70B0079044A /* Craft.swift in Sources */,
 				4CAF5A1320BFCE4100267E09 /* Settings.swift in Sources */,
+				4C47BDD020C46C6E00940973 /* CameraManager.swift in Sources */,
 				4CDAB4DA20AFD7F000965BBC /* SteeringAdapter.swift in Sources */,
 				4C0AA7B62092EB2A000EEEB9 /* AppDelegate.swift in Sources */,
 				4CAF5A1720BFD04400267E09 /* LaunchViewController.swift in Sources */,
+				4C47BDDC20C4D48700940973 /* TouchInputZone.swift in Sources */,
+				4C47BDD220C46CD900940973 /* GameDelegate.swift in Sources */,
 				4C0B802C20C2036C0079044A /* PhysicsEntity.swift in Sources */,
+				4C47BDD820C4996100940973 /* Scenario.swift in Sources */,
 				4C0B802A20C1F9910079044A /* MoonLanderCraft.swift in Sources */,
+				4C47BDD420C47E1700940973 /* TerrainManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

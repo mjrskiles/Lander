@@ -21,6 +21,8 @@ class ScrollManager {
     }
     
     func updatePositions(of spriteMatrix: inout [[SKSpriteNode]], _ dx: CGFloat, _ dy: CGFloat) {
+//        print("Updated background position with dx \(dx) dy \(dy)")
+        
         guard !spriteMatrix.isEmpty else {
             return
         }

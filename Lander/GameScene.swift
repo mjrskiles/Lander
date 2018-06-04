@@ -15,7 +15,8 @@ class GameScene: SKScene {
     // Constants
     let METERS_TO_POINTS: CGFloat = 1.50
     let MOTION_UPDATE_RATE = 1.0 / 60.0
-    let MOON_RADIUS: CGFloat = 500.0 // km
+    let MOON_RADIUS: CGFloat = 100.0 // km
+    let ORBIT_STARTING_ALT: CGFloat = 400.0 // km
     let GRAVITY: CGFloat = -1.62 // m/s^2
     let km: CGFloat = 1000.0
     
@@ -24,7 +25,14 @@ class GameScene: SKScene {
     
     private var lastUpdateTime : TimeInterval = 0
     
-    private var craft: MoonLanderCraft?
+    // Initializers
+    var scenario: Scenario = Scenarios.orbitScenario
+    var craft: MoonLanderCraft?
+    private var moon: World!
+    
+    // Logic Delegates
+    private var cameraManager: CameraManager!
+    private var terrainManager: TerrainManager!
     
     // HUD
     private var label1: SKLabelNode?
@@ -35,9 +43,8 @@ class GameScene: SKScene {
     private var retrogradeIcon: SKNode?
     
     // Background Sprites & scrolling
-    private let MID_SCROLL_RATIO: CGFloat = 0.002
-    private let CLOSE_SCROLL_RATIO: CGFloat = 0.004
-    private var lastCameraPos: CGPoint?
+    private let MID_SCROLL_RATIO: CGFloat = 0.0015
+    private let CLOSE_SCROLL_RATIO: CGFloat = 0.003
     private var midBackgroundSprites: [[SKSpriteNode]] = []
     private var midScrollManager: ScrollManager?
     private var closeBackgroundSprites: [[SKSpriteNode]] = []
@@ -85,38 +92,27 @@ class GameScene: SKScene {
 
         self.lastUpdateTime = 0
         
-        // Set up radial gravity
-//        self.world = self.childNode(withName: "//World")
-//        let gravity = SKFieldNode.radialGravityField()
-//        gravity.strength = 1.62
-//        gravity.falloff = 0
-//        world?.addChild(gravity)
-        
-        guard let ground = self.childNode(withName: "//ground") as? SKSpriteNode else {
-            return
+        if let scene = self.scene {
+            // TODO: Add error handling in case any of the initializers fail
+            craft = MoonLanderCraft(in: scene)
+            moon = Moon(in: scene)
+            cameraManager = CameraManager(for: camera!, in: scene, following: craft!.root)
+            initializeUI()
+            initializeBackground()
+            
+            guard let ground = self.childNode(withName: "//ground") as? SKSpriteNode else {
+                return
+            }
+            terrainManager = TerrainManager(managing: ground, on: moon, positioningUnder: craft!.root, in: scene)
+            
+            let r = (MOON_RADIUS + scenario.altitude) * km * METERS_TO_POINTS
+            craft!.root.position.y = r
+            print(String(format:"Set initial r to %08.0f", r))
+            
+            label1 = self.childNode(withName: "//landerPos") as? SKLabelNode
+            label2 = self.childNode(withName: "//landerDV") as? SKLabelNode
+            label3 = self.childNode(withName: "//landerAV") as? SKLabelNode
         }
-        ground.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: ground.size.width, height: ground.size.height))
-        ground.physicsBody?.isDynamic = false
-        ground.physicsBody?.restitution = 0.25
-        ground.physicsBody?.friction = 0.8
-        ground.physicsBody?.categoryBitMask = shipCollidableMask
-        //        ground.physicsBody?.collisionBitMask = shipCollidableMask
-        
-        
-        craft = MoonLanderCraft(in: scene!)
-        initializeCamera()
-        initializeUI()
-        lastCameraPos = camera?.position
-        initializeBackground()
-        
-        let r = (MOON_RADIUS) * km * METERS_TO_POINTS
-        craft!.root.position.y = r
-        //        ground.position.y = craft.position.y - 10
-        print("Set initial r to %08.0f", r)
-        
-        label1 = self.childNode(withName: "//landerPos") as? SKLabelNode
-        label2 = self.childNode(withName: "//landerDV") as? SKLabelNode
-        label3 = self.childNode(withName: "//landerAV") as? SKLabelNode
     }
     
     // Called by the UI to zero the gyro
@@ -206,29 +202,21 @@ class GameScene: SKScene {
             var a: [SKSpriteNode] = []
             for col in 0..<3 {
                 let bg = spriteWithSceneHeight(from: bgTex)
+                bg.position.x = bg.size.width * CGFloat(col - 1)  // This works specifically for arrays of 3
+                bg.position.y = bg.size.height * CGFloat(row - 1)
                 bg.zRotation = (CGFloat.pi / 2) * CGFloat(row + col) // Mix up the rotations to avoid appearance of pattern
-                bg.position.x = bg.size.width * CGFloat(col - 1) // This works specifically for arrays of 3
-                bg.position.y = bg.size.height * CGFloat(row - 1 * (col == 1 ? 1 : -1))
                 a.append(bg)
                 parent.addChild(bg)
             }
             matrix.append(a)
         }
+    
     }
     
     func spriteWithSceneHeight(from texture: SKTexture) -> SKSpriteNode {
         let sprite = SKSpriteNode(texture: texture)
         sprite.size = CGSize(width: scene!.size.height, height: scene!.size.height)
         return sprite
-    }
-    
-    // Sets the camera to always stay near the spacecraft and never rotate.
-    func initializeCamera() {
-        if let camera = self.scene?.camera, let craft = self.craft?.root {
-            let rangeConstraint = SKConstraint.distance(SKRange(upperLimit: 40.0), to: craft)
-            let rotationConstraint = SKConstraint.zRotation(SKRange(constantValue: 0.0))
-            camera.constraints = [rangeConstraint, rotationConstraint]
-        }
     }
     
     func touchDown(atPoint pos : CGPoint) {
@@ -295,14 +283,14 @@ class GameScene: SKScene {
             let dx = craft.physicsBody.velocity.dx
             let v = ((dx * dx) + (dy * dy)).squareRoot()
             
-            label1?.text = String(format: "alt: %6.3f km, r: %08.0f, abs pos: (%+08.0f, %+08.0f)", alt, r, craftAbsPos.x / mToP, craftAbsPos.y / mToP)
+            label1?.text = String(format: "alt: %6.3f km, r: %08.3f, abs pos: (%+08.0f, %+08.0f)", alt, r / km, craftAbsPos.x / mToP, craftAbsPos.y / mToP)
             label2?.text = String(format: "v: %08.2f m/s, dx: %+06.2f, dy: %+06.2f", v, dx, dy)
             label3?.text = String(format: "orbital angle: %+05.3f, gy %+05.3f, gx %+05.3f", theta, gy, gx)
             
             // Update the UI
-            attitudeCrosshair?.zRotation = craft.zRotation
-            progradeIcon?.zRotation = atan2(dy, dx) - (CGFloat.pi / 2)
-            retrogradeIcon?.zRotation = atan2(dy, dx) + (CGFloat.pi / 2)
+            attitudeCrosshair?.zRotation = craft.zRotation - cameraManager.camera.zRotation
+            progradeIcon?.zRotation = atan2(dy, dx) - (CGFloat.pi / 2) - cameraManager.camera.zRotation
+            retrogradeIcon?.zRotation = atan2(dy, dx) + (CGFloat.pi / 2) - cameraManager.camera.zRotation
         }
         
         // Initialize _lastUpdateTime if it has not already been
@@ -318,15 +306,13 @@ class GameScene: SKScene {
             entity.update(deltaTime: dt)
         }
         
+        // Update game logic delegates
+        cameraManager.update(dt)
+        terrainManager.update(dt)
+        
         // Handle scrolling
-        let dx = camera!.position.x - (lastCameraPos?.x ?? 0)
-        let dy = camera!.position.y - (lastCameraPos?.y ?? 0)
-        midScrollManager?.updatePositions(of: &midBackgroundSprites, dx, dy)
-        closeScrollManager?.updatePositions(of: &closeBackgroundSprites, dx, dy)
-        
-        lastCameraPos = camera!.position
-        
-//        print("Camera position: \(camera!.position)")
+        midScrollManager?.updatePositions(of: &midBackgroundSprites, cameraManager.dx, cameraManager.dy)
+        closeScrollManager?.updatePositions(of: &closeBackgroundSprites, cameraManager.dx, cameraManager.dy)
         
         // Handle input
         if motionEnabled && motionManager.isDeviceMotionAvailable {
@@ -349,14 +335,13 @@ class GameScene: SKScene {
         
         if firstPass {
             if let body = craft?.body {
-                craft!.zRotation = CGFloat.pi / 2
-                let impulse = Settings.instance.initialImpulse
+                craft!.zRotation = scenario.zRotation
+                let impulse = scenario.impulse
                 body.physicsBody!.applyImpulse(CGVector(dx: impulse, dy: 0.0))
                 firstPass = false
                 print(String(format: "Applied first pass impulse, used value %8.0f", impulse))
             }
         }
-        
         
         self.lastUpdateTime = currentTime
     }

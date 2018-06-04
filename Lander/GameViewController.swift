@@ -11,8 +11,6 @@ import SpriteKit
 import GameplayKit
 
 class GameViewController: UIViewController {
-    // Outlets
-    @IBOutlet weak var motionContolSelector: UISwitch!
     
     var gameScene: GameScene?
     
@@ -46,7 +44,6 @@ class GameViewController: UIViewController {
                 }
                 
                 self.gameScene = sceneNode
-                gameScene?.motionEnabled = motionContolSelector.isOn
             }
         }
     }
@@ -70,9 +67,5 @@ class GameViewController: UIViewController {
     
     @IBAction func returnToHomeScreen(_ sender: UIButton) {
         dismiss(animated: true, completion: nil)
-    }
-    
-    @IBAction func inputTypeWasSelected(_ sender: UISwitch) {
-        gameScene?.motionEnabled = sender.isOn
     }
 }

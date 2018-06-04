@@ -17,7 +17,16 @@ class TouchInputOverlayNode: SKSpriteNode, TouchInputZoneDelegate {
     let thrusterInputZone: TouchInputZone
     let auxiliaryMotionControlZone: TouchInputZone
     
-    /// Sets used to keep track of touches, and their relevant controls.
+    // Buttons
+    let buttonColor = UIColor.init(red: 0.0, green: 122.0/255.0, blue: 1.0, alpha: 1.0)
+    let buttonZPos: CGFloat = 1000
+    let buttonSize: CGSize
+    let boosterToggleButton: SKSpriteNode
+    var boosterToggleState = false
+    let motionToggleButton: SKSpriteNode
+    var motionToggleState = false
+    
+    // Sets used to keep track of touches, and their relevant controls.
     var steeringControlTouches = Set<UITouch>()
     var thrusterControlTouches = Set<UITouch>()
     var auxiliaryControlTouches = Set<UITouch>()
@@ -37,6 +46,7 @@ class TouchInputOverlayNode: SKSpriteNode, TouchInputZoneDelegate {
         auxiliaryMotionControlZone = TouchInputZone(size: CGSize(width: zoneWidth, height: size.height))
         auxiliaryMotionControlZone.position.x = steeringInputZone.position.x
         
+        // Highlight the touch overlays for debugging
         if Settings.instance.debug {
             steeringInputZone.color = UIColor.blue
             steeringInputZone.alpha = 0.1
@@ -46,6 +56,22 @@ class TouchInputOverlayNode: SKSpriteNode, TouchInputZoneDelegate {
             auxiliaryMotionControlZone.alpha = 0.1
         }
         
+        buttonSize = CGSize(width: size.width / 12, height: size.width / 12)
+        
+        boosterToggleButton = SKSpriteNode(imageNamed: "button_toggle_rocket")
+        motionToggleButton = SKSpriteNode(imageNamed: "button_toggle_motion")
+        
+        boosterToggleButton.size = buttonSize
+        boosterToggleButton.zPosition = buttonZPos
+        motionToggleButton.size = buttonSize
+        motionToggleButton.zPosition = buttonZPos
+        
+        boosterToggleButton.position.x = (-size.height * 0.4)
+        boosterToggleButton.position.y = (size.height / 2) - (buttonSize.height / 1.5)
+        
+        motionToggleButton.position.x = (size.height * 0.4)
+        motionToggleButton.position.y = (size.height / 2) - (buttonSize.height / 1.5)
+        
         super.init(texture: nil, color: UIColor.clear, size: size)
         
         steeringInputZone.delegate = self
@@ -54,6 +80,8 @@ class TouchInputOverlayNode: SKSpriteNode, TouchInputZoneDelegate {
         
         self.addChild(steeringInputZone)
         self.addChild(thrusterInputZone)
+        self.addChild(boosterToggleButton)
+        self.addChild(motionToggleButton)
 //        self.addChild(auxiliaryMotionControlZone)
     }
     
@@ -72,6 +100,16 @@ class TouchInputOverlayNode: SKSpriteNode, TouchInputZoneDelegate {
         }
     }
     
+    func setButtonHighlight(to state: Bool, on button: SKSpriteNode) {
+        if state {
+            button.color = buttonColor
+            button.colorBlendFactor = 0.9
+        }
+        else {
+            button.colorBlendFactor = 0.0
+        }
+    }
+    
     // TouchInputZoneDelegate functions
     func touchInputZone(_ inputZone: TouchInputZone, didUpdateX x: CGFloat, y: CGFloat) {
         if let gameScene = self.scene as? GameScene {
@@ -87,6 +125,7 @@ class TouchInputOverlayNode: SKSpriteNode, TouchInputZoneDelegate {
     
     func touchInputZone(_ inputZone: TouchInputZone, isPressed: Bool) {
         if let gameScene = self.scene as? GameScene {
+            
             if inputZone === thrusterInputZone {
                 gameScene.setEngineState(to: isPressed)
             }
@@ -134,6 +173,24 @@ class TouchInputOverlayNode: SKSpriteNode, TouchInputZoneDelegate {
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesEnded(touches, with: event)
+        
+        for t in touches {
+            if boosterToggleButton === atPoint(t.location(in: self)) {
+                boosterToggleState = !boosterToggleState
+                setButtonHighlight(to: boosterToggleState, on: boosterToggleButton)
+                if let scene = self.scene as? GameScene {
+                    scene.setEngineState(to: boosterToggleState)
+                }
+            }
+            
+            if motionToggleButton === atPoint(t.location(in: self)) {
+                motionToggleState = !motionToggleState
+                setButtonHighlight(to: motionToggleState, on: motionToggleButton)
+                if let scene = self.scene as? GameScene {
+                    scene.motionEnabled = motionToggleState
+                }
+            }
+        }
         
         let steeringTouches = steeringControlTouches.intersection(touches)
         steeringInputZone.touchesEnded(steeringTouches, with: event)

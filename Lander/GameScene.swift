@@ -43,6 +43,8 @@ class GameScene: SKScene {
     private var retrogradeIcon: SKNode?
     var altimeterArrow: SKSpriteNode?
     var altimeterHeight: CGFloat = 0.0
+    var throttleArrow: SKSpriteNode?
+    var throttleHeight: CGFloat = 0.0
     
     // Background Sprites & scrolling
     private let MID_SCROLL_RATIO: CGFloat = 0.0015
@@ -204,7 +206,6 @@ class GameScene: SKScene {
         altLabel!.position.y += (altimeterArrow!.size.height / 4)
         altLabel!.zRotation = CGFloat.pi
         altimeterArrow!.addChild(altLabel!)
-        
         
         altimeterHeight = radius * 2
         altimeterBar.size.height = altimeterHeight

@@ -43,8 +43,8 @@ class GameScene: SKScene {
     private var retrogradeIcon: SKNode?
     
     // Background Sprites & scrolling
-    private let MID_SCROLL_RATIO: CGFloat = 0.002
-    private let CLOSE_SCROLL_RATIO: CGFloat = 0.004
+    private let MID_SCROLL_RATIO: CGFloat = 0.0015
+    private let CLOSE_SCROLL_RATIO: CGFloat = 0.003
     private var midBackgroundSprites: [[SKSpriteNode]] = []
     private var midScrollManager: ScrollManager?
     private var closeBackgroundSprites: [[SKSpriteNode]] = []

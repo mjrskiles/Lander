@@ -56,20 +56,21 @@ class GameScene: SKScene {
     var firstPass = true
     
     // Input related
+    var touchInputOverlay: TouchInputOverlayNode?
+    
     //   Motion
     var motionEnabled: Bool = true {
         didSet {
-            if motionEnabled {
-                zeroGyro()
-            }
+            touchInputOverlay?.switchInputMethod(isMotion: motionEnabled)
         }
     }
+    var motionPaused: Bool = false
     var motionAdapter = MotionSteeringAdapter()
     let motionManager = CMMotionManager()
     
     //   Touch
     private var lastTouch: CGPoint?
-    private var rotationScalar: CGFloat = 125.0
+    private var rotationScalar: CGFloat = 1
 
     override var canBecomeFirstResponder: Bool {
         return true
@@ -78,6 +79,10 @@ class GameScene: SKScene {
     override func sceneDidLoad() {
         // All input will first flow through the scene.
         becomeFirstResponder()
+        
+        // Initialize the touch input
+        touchInputOverlay = TouchInputOverlayNode(size: self.size)
+        camera?.addChild(touchInputOverlay!)
         
         // Initialize Device Motion
         if motionManager.isDeviceMotionAvailable {
@@ -115,16 +120,7 @@ class GameScene: SKScene {
         }
     }
     
-    // Called by the UI to zero the gyro
-    func zeroGyro() {
-//        if motionManager.isGyroAvailable {
-//            if let data = motionManager.gyroData {
-//                Settings.instance.gyroOffset = data.rotationRate.z * -1
-//                print(String(format: "Zeroed gyro to %+06.4f", Settings.instance.gyroOffset))
-//            }
-//        }
-    }
-    
+    // Set up the scrolling star background
     func initializeBackground() {
         if let camera = self.camera {
             
@@ -151,6 +147,7 @@ class GameScene: SKScene {
         }
     }
     
+    // Set up the UI circle, prograde, retrograde icons
     func initializeUI() {
         let path = CGMutablePath()
         let radius = (scene!.size.height * 0.8) / 2
@@ -213,62 +210,76 @@ class GameScene: SKScene {
     
     }
     
+    // Helper function to create a square sprite with sides = scene.height
     func spriteWithSceneHeight(from texture: SKTexture) -> SKSpriteNode {
         let sprite = SKSpriteNode(texture: texture)
         sprite.size = CGSize(width: scene!.size.height, height: scene!.size.height)
         return sprite
     }
     
-    func touchDown(atPoint pos : CGPoint) {
-        lastTouch = pos
-        craft?.setEngineState(to: true)
+    func rotateCraft(delta: CGFloat) {
+        if let craft = self.craft {
+            craft.root.zRotation += delta * (2 * CGFloat.pi) * rotationScalar
+        }
     }
     
-    func touchMoved(toPoint pos : CGPoint) {
-        guard !motionEnabled else {
-            return
-        }
-        if let last = lastTouch, let craft = self.craft {
-            let dy = pos.y - last.y
-            craft.root.zRotation += (dy / rotationScalar)
-            
-        }
-        lastTouch = pos
+    func setEngineState(to state: Bool) {
+        craft?.setEngineState(to: state)
     }
     
-    func touchUp(atPoint pos : CGPoint) {
-        lastTouch = nil
-        craft?.setEngineState(to: false)
+    func setEngineThrottle(delta: CGFloat) {
+        // TODO: implement throttle
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches { self.touchDown(atPoint: t.location(in: self.view)) }
+        print("Touch began. Passing to touch input overlay")
+        self.touchInputOverlay?.touchesBegan(touches, with: event)
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches { self.touchMoved(toPoint: t.location(in: self.view)) }
+        self.touchInputOverlay?.touchesMoved(touches, with: event)
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches { self.touchUp(atPoint: t.location(in: self.view)) }
+        self.touchInputOverlay?.touchesEnded(touches, with: event)
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches { self.touchUp(atPoint: t.location(in: self.view)) }
+        self.touchInputOverlay?.touchesCancelled(touches, with: event)
     }
     
-    
+    // Called before each frame is rendered
     override func update(_ currentTime: TimeInterval) {
-        // Called before each frame is rendered
+        
         if let craft = self.craft {
+            if craft.engineState {
+                let impulse: CGFloat = 45000
+                let angle = craft.zRotation + (CGFloat.pi / 2)
+                let dx = impulse * cos(angle)
+                let dy = impulse * sin(angle)
+                craft.engine.physicsBody!.applyForce(CGVector(dx: dx, dy: dy))
+            }
             
+            // velocity
+            let dy = craft.physicsBody.velocity.dy
+            let dx = craft.physicsBody.velocity.dx
+            let v = ((dx * dx) + (dy * dy)).squareRoot()
+            
+            // Update the UI
+            attitudeCrosshair?.zRotation = craft.zRotation - cameraManager.camera.zRotation
+            progradeIcon?.zRotation = atan2(dy, dx) - (CGFloat.pi / 2) - cameraManager.camera.zRotation
+            retrogradeIcon?.zRotation = atan2(dy, dx) + (CGFloat.pi / 2) - cameraManager.camera.zRotation
+            
+            /*
+                The rest of this let block is dedicated to updating text overlays
+            */
             // position
             let mToP = CGFloat(METERS_TO_POINTS)
             let craftAbsPos = craft.position
             let absX = craftAbsPos.x / mToP
             let absY = craftAbsPos.y / mToP
             let r = ((absX * absX) + (absY * absY)).squareRoot()
-            let alt = (r - (MOON_RADIUS * km)) / km
+            let alt = (r - (MOON_RADIUS * km)) / km / 100
             
             // angle
             let theta = atan2(absY, absX)
@@ -278,19 +289,9 @@ class GameScene: SKScene {
             scene!.physicsWorld.gravity.dy = gy
             scene!.physicsWorld.gravity.dx = gx
             
-            // velocity
-            let dy = craft.physicsBody.velocity.dy
-            let dx = craft.physicsBody.velocity.dx
-            let v = ((dx * dx) + (dy * dy)).squareRoot()
-            
-            label1?.text = String(format: "alt: %6.3f km, r: %08.3f, abs pos: (%+08.0f, %+08.0f)", alt, r / km, craftAbsPos.x / mToP, craftAbsPos.y / mToP)
-            label2?.text = String(format: "v: %08.2f m/s, dx: %+06.2f, dy: %+06.2f", v, dx, dy)
+            label1?.text = String(format: "alt: %8.3f km, r: %08.3f", alt, r / km)
+            label2?.text = String(format: "v: %08.2f m/s, dx: %+06.2f, dy: %+06.2f", v / 10, dx, dy)
             label3?.text = String(format: "orbital angle: %+05.3f, gy %+05.3f, gx %+05.3f", theta, gy, gx)
-            
-            // Update the UI
-            attitudeCrosshair?.zRotation = craft.zRotation - cameraManager.camera.zRotation
-            progradeIcon?.zRotation = atan2(dy, dx) - (CGFloat.pi / 2) - cameraManager.camera.zRotation
-            retrogradeIcon?.zRotation = atan2(dy, dx) + (CGFloat.pi / 2) - cameraManager.camera.zRotation
         }
         
         // Initialize _lastUpdateTime if it has not already been
@@ -315,34 +316,29 @@ class GameScene: SKScene {
         closeScrollManager?.updatePositions(of: &closeBackgroundSprites, cameraManager.dx, cameraManager.dy)
         
         // Handle input
-        if motionEnabled && motionManager.isDeviceMotionAvailable {
+        if motionEnabled && !motionPaused && motionManager.isDeviceMotionAvailable {
             if let data = motionManager.deviceMotion {
                 let angleDelta = motionAdapter.handle(MotionInputEvent(from: data))
                 craft?.zRotation += CGFloat(angleDelta)
             } else {
                 print("Device motion unavailable")
             }
-
-        }
-        
-        if lastTouch != nil {
-            let impulse: CGFloat = 45000
-            let angle = craft!.zRotation + (CGFloat.pi / 2)
-            let dx = impulse * cos(angle)
-            let dy = impulse * sin(angle)
-            craft?.engine.physicsBody!.applyForce(CGVector(dx: dx, dy: dy))
         }
         
         if firstPass {
-            if let body = craft?.body {
-                craft!.zRotation = scenario.zRotation
-                let impulse = scenario.impulse
-                body.physicsBody!.applyImpulse(CGVector(dx: impulse, dy: 0.0))
-                firstPass = false
-                print(String(format: "Applied first pass impulse, used value %8.0f", impulse))
-            }
+            applyFirstPassImpulse()
         }
         
         self.lastUpdateTime = currentTime
+    }
+    
+    func applyFirstPassImpulse() {
+        if let body = craft?.body {
+            craft!.zRotation = scenario.zRotation
+            let impulse = scenario.impulse
+            body.physicsBody!.applyImpulse(CGVector(dx: impulse, dy: 0.0))
+            firstPass = false
+            print(String(format: "Applied first pass impulse, used value %8.0f", impulse))
+        }
     }
 }

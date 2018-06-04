@@ -15,6 +15,8 @@ class MoonLanderCraft: Craft {
     
     var engine: SKSpriteNode
     
+    var engineState: Bool = false
+    
     var engineEmitter: SKEmitterNode?
     
     let rootName: String = "lander"
@@ -126,6 +128,7 @@ class MoonLanderCraft: Craft {
     
     func setEngineState(to state: Bool) {
         if state {
+            engineState = true
             if engineEmitter == nil {
                 if let nozzleFlame = newFlameEmitter() {
                     engineEmitter = nozzleFlame
@@ -137,6 +140,7 @@ class MoonLanderCraft: Craft {
         }
         
         else {
+            engineState = false
             if engineEmitter != nil {
                 engine.removeChildren(in: [engineEmitter!])
             }

@@ -69,6 +69,13 @@ class TouchInputZone: SKSpriteNode {
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesEnded(touches, with: event)
+        
+        // If the touch overlay invoked this method with an empty set, it means
+        // That this isn't the set of touches that ended.
+        guard !touches.isEmpty else {
+            return
+        }
+        
         initialTouch = nil
         lastTouch = nil
         

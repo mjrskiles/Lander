@@ -1,17 +1,18 @@
 //
-//  LaunchViewController.swift
+//  HelpViewController.swift
 //  Lander
 //
-//  Created by Michael Skiles on 5/31/18.
+//  Created by Michael Skiles on 6/5/18.
 //  Copyright © 2018 Michael Skiles. All rights reserved.
 //
 
 import UIKit
 
-class LaunchViewController: UIViewController {
-    
+class HelpViewController: UIViewController {
+
     override func viewDidLoad() {
         super.viewDidLoad()
+
         // Do any additional setup after loading the view.
     }
 
@@ -20,8 +21,10 @@ class LaunchViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    @IBAction func backgroundTouched(_ sender: UIControl) {
+    @IBAction func goBack(_ sender: UIButton) {
+        dismiss(animated: true, completion: nil)
     }
+    
     /*
     // MARK: - Navigation
 
